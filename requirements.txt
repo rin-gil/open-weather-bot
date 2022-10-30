@@ -1,3 +1,5 @@
-aiogram~=2.18
-aioredis~=2.0
-environs~=9.0
+aiogram==2.22.1
+aiohttp==3.8.1
+aioschedule==0.5.2
+aiosqlite==0.17.0
+environs==9.5.0

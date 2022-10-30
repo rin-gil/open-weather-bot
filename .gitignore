@@ -51,6 +51,7 @@ __pypackages__/
 
 # Environments
 .venv
+.env
 env/
 venv/
 ENV/
@@ -60,4 +61,6 @@ venv.bak/
 # Pyre type checker
 .pyre/
 .idea/*
-.env
+
+# Data
+db.sqlite3

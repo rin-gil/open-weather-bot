@@ -1,13 +1,13 @@
 [Unit]
-Description=Course Bot
+Description=OpenWeatherBot daemon
 After=network.target
 
 [Service]
 User=tgbot
 Group=tgbot
 Type=simple
-WorkingDirectory=/opt/tgbot
-ExecStart=/opt/tgbot/venv/bin/python bot.py
+WorkingDirectory=/opt/OpenWeatherBot
+ExecStart=/opt/OpenWeatherBot/venv/bin/python bot.py
 Restart=always
 
 [Install]
