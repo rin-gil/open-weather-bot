@@ -1,0 +1,8 @@
+{
+  "command_start": "Let's set the weather! \uD83C\uDF26\n\nWrite the full name of the city or part of it:",
+  "command_help": "I'm showing the weather information for the selected city. \uD83C\uDF26\n\nThe information is updated automatically every 3 hours.\n\nTo set the weather, press /start\n\nTo stop bot and delete all your data, press /stop",
+  "command_stop": "❌ All your data has been deleted.\n\nIn order to start the bot again, press /start",
+  "city_search_success": "",
+  "city_search_error": "",
+  "temperature_units": ""
+}

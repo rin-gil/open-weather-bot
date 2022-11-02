@@ -35,7 +35,6 @@ pip-delete-this-directory.txt
 *.mo
 *.pot
 
-
 # pyenv
 .python-version
 
@@ -64,3 +63,6 @@ venv.bak/
 
 # Data
 db.sqlite3
+
+# Logs
+*.log
