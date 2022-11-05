@@ -50,10 +50,8 @@ async def save_dialog_message_id(user_id: int, dialog_message_id: int) -> None:
     """
     async with connect(database=DB_NAME) as db:
         values: tuple = (user_id, dialog_message_id)
-        await db.execute(
-            """INSERT INTO users (user_id, dialog_message_id) VALUES (?, ?)
-            ON CONFLICT (user_id) DO UPDATE SET dialog_message_id=excluded.dialog_message_id""", values
-        )
+        await db.execute("""INSERT INTO users (user_id, dialog_message_id) VALUES (?, ?)
+            ON CONFLICT (user_id) DO UPDATE SET dialog_message_id=excluded.dialog_message_id;""", values)
         await db.commit()
 
 
@@ -65,7 +63,21 @@ async def save_user_weather_settings(data: dict[str, int | str]) -> None:
     :param data: dictionary with weather settings
     :return: None
     """
-    pass
+    async with connect(database=DB_NAME) as db:
+        values: tuple = (
+            data.get('dialog_message_id'),
+            data.get('user_language'),
+            data.get('city_latitude'),
+            data.get('city_longitude'),
+            data.get('temperature_units'),
+            data.get('user_id')
+        )
+        await db.execute(
+            """UPDATE users
+            SET dialog_message_id=?, language_code=?, city_latitude=?, city_longitude=?, temperature_units=?
+            WHERE user_id=?;""", values
+        )
+        await db.commit()
 
 
 async def delete_user_from_db(user_id: int) -> None:
