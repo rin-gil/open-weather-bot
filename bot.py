@@ -16,7 +16,7 @@ dp = Dispatcher(bot, storage=MemoryStorage())
 async def on_startup(_):
     await db_init()
     register_handlers(dp)
-    # TODO сделать запуск проверки погоді по расписанию
+    # TODO сделать запуск проверки погоды по расписанию
 
 
 async def on_shutdown(_):

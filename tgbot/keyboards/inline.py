@@ -1,5 +1,6 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+""" Creates inline keyboards for dialogs with the bot """
 
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tgbot.misc.locale import get_dialog_message_answer
 
 
@@ -11,7 +12,7 @@ async def generate_cities_keyboard(cities: list[dict], user_language_code: str) 
     :param user_language_code: user language code
     :return: Generated keyboard (object of InlineKeyboardMarkup class)
     """
-    keyboard_cities = InlineKeyboardMarkup(row_width=1)
+    keyboard_cities: InlineKeyboardMarkup = InlineKeyboardMarkup(row_width=1)
     for city in cities:
         keyboard_cities.insert(InlineKeyboardButton(
             text=city.get('city_full_name'),

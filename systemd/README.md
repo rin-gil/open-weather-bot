@@ -1,1 +1,1 @@
-Пример конфигурации для запуска бота на сервере в виде службы systemd
+Example configuration for running the bot on a server as a systemd service

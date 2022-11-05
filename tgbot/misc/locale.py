@@ -1,5 +1,8 @@
+""" Functions for working with localization """
+
 from json import loads
 from pathlib import Path
+
 from tgbot.config import LANGUAGES_DIR, logger
 
 

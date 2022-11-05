@@ -1,3 +1,5 @@
+""" Configuration settings for the bot """
+
 import logging
 
 from dataclasses import dataclass
@@ -5,14 +7,10 @@ from os import path
 from pathlib import Path
 from environs import Env
 
-BANNED_CONTENT: tuple = ('animation', 'audio', 'contact', 'document', 'game', 'location', 'photo',
-                         'pinned_message', 'poll', 'sticker', 'video', 'video_note', 'voice')
-
 BASE_DIR: Path = Path(__file__).resolve().parent
 DB_NAME: str = path.join(BASE_DIR, 'db.sqlite3')
 LANGUAGES_DIR: str = path.join(BASE_DIR, 'lang')
 LOG_FILE: str = path.join(BASE_DIR, 'OpenWeatherBot.log')
-
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(

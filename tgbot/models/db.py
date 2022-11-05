@@ -1,5 +1,6 @@
-from aiosqlite import connect
+""" Functions for working with the database """
 
+from aiosqlite import connect
 from tgbot.config import DB_NAME
 
 
@@ -13,7 +14,7 @@ async def db_init() -> None:
         await db.execute(
             """CREATE TABLE IF NOT EXISTS users (
             user_id INTEGER PRIMARY KEY,
-            dialog_message_id INTEGER,
+            dialog_message_id INTEGER NOT NULL,
             language_code VARCHAR(2),
             city_latitude VARCHAR(11),
             city_longitude VARCHAR(11),
@@ -30,11 +31,11 @@ async def get_dialog_message_id(user_id: int) -> int:
     :return: dialog message id
     """
     async with connect(database=DB_NAME) as db:
-        value: tuple = (user_id, )
+        value: tuple = (user_id,)
         dialog_message_id: int = 0
         async with db.execute("""SELECT dialog_message_id FROM users WHERE user_id=?;""", value) as cursor:
             async for row in cursor:
-                dialog_message_id = row[0]
+                dialog_message_id: int = row[0]
         return dialog_message_id
 
 
