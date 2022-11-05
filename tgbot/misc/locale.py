@@ -1,6 +1,7 @@
 """ Functions for working with localization """
 
 from json import loads
+from os import path
 from pathlib import Path
 
 from tgbot.config import LANGUAGES_DIR, logger
@@ -15,7 +16,7 @@ def _create_locale_from_language_files(path_to_lang_dir: str) -> dict[str, dict[
     :return: nested dictionary used for bot dialog messages
     """
     try:
-        if not Path(f'{path_to_lang_dir}\\en.json').is_file():
+        if not path.isfile(path.join(path_to_lang_dir, 'en.json')):
             raise Exception('The default translation file en.json does not exist in the lang folder')
         dialogue_messages: dict[str, dict[str, str]] = {}
         for lang_file in Path(path_to_lang_dir).glob('*.json'):
@@ -29,7 +30,7 @@ def _create_locale_from_language_files(path_to_lang_dir: str) -> dict[str, dict[
         exit()
 
 
-_LOCALES: dict[str, dict[str, str]] = _create_locale_from_language_files(LANGUAGES_DIR)
+_LOCALES: dict[str, dict[str, str]] = _create_locale_from_language_files(path_to_lang_dir=LANGUAGES_DIR)
 
 
 async def get_dialog_message_answer(user_language_code: str, dialog_message_name: str) -> str:

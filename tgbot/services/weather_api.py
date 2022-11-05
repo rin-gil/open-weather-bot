@@ -10,6 +10,8 @@ env.read_env()
 API_KEY: str = env.str('WEATHER_API')
 GEOCODING_API_URL: str = 'https://api.openweathermap.org/geo/1.0/direct'
 
+# https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}&lang={lang}&units=metric
+
 
 async def _correct_user_input(string: str) -> str:
     """

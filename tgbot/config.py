@@ -13,11 +13,9 @@ LANGUAGES_DIR: str = path.join(BASE_DIR, 'lang')
 LOG_FILE: str = path.join(BASE_DIR, 'OpenWeatherBot.log')
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(
-    # filename=LOG_FILE,
-    level=logging.INFO,
-    format='%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s'
-)
+logging.basicConfig(filename=LOG_FILE,
+                    level=logging.INFO,
+                    format='%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s')
 
 
 @dataclass
