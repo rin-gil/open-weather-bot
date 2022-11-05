@@ -2,4 +2,5 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 
 
 class TextInput(StatesGroup):
-    Unlock = State()
+    """Describes the state for the FSM (Final State Machine)"""
+    EnterCityName = State()

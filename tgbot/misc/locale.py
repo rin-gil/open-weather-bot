@@ -8,8 +8,8 @@ def _create_locale_from_language_files(path_to_lang_dir: str) -> dict[str, dict[
     Gathers language .json files into one dictionary, where key is language code,
     value is a nested dictionary with text fields and their values
 
-    :param path_to_lang_dir: Path to the folder with language files
-    :return: Nested dictionary used for bot dialog messages
+    :param path_to_lang_dir: path to the folder with language files
+    :return: nested dictionary used for bot dialog messages
     """
     try:
         if not Path(f'{path_to_lang_dir}\\en.json').is_file():
@@ -21,7 +21,7 @@ def _create_locale_from_language_files(path_to_lang_dir: str) -> dict[str, dict[
                 dialogue_messages.update(dict({str(lang_file)[-7:-5]: loads(lang_file_content)}))
         return dialogue_messages
     except Exception as ex:
-        logger.critical(f'Error when gathering language files: {ex}')
+        logger.critical('Error when gathering language files: %s', ex)
         logger.info('Bot stopped!')
         exit()
 
@@ -29,16 +29,16 @@ def _create_locale_from_language_files(path_to_lang_dir: str) -> dict[str, dict[
 _LOCALES: dict[str, dict[str, str]] = _create_locale_from_language_files(LANGUAGES_DIR)
 
 
-def get_bot_message(language_code: str, bot_message: str) -> str:
+async def get_dialog_message_answer(user_language_code: str, dialog_message_name: str) -> str:
     """
     Returns the bot's message in the language of the Telegram user interface
 
-    :param language_code: language code
-    :param bot_message: bot message
-    :return: bot answer
+    :param user_language_code: ISO 639-1 language code
+    :param dialog_message_name: dialog message
+    :return: bot dialog message answer
     """
     try:
-        return _LOCALES.get(language_code).get(bot_message)
+        return _LOCALES.get(user_language_code).get(dialog_message_name)
     except AttributeError:
-        logger.error(f'No translation found for the {language_code.upper()} language, EN was used')
-        return _LOCALES.get('en').get(bot_message)
+        logger.error('No translation found for the %s language, EN was used', user_language_code.upper())
+        return _LOCALES.get('en').get(dialog_message_name)

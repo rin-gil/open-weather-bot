@@ -1,8 +1,10 @@
 {
-  "command_start": "Давай налаштуємо погоду! \uD83C\uDF26\n\nНапиши повну назву міста або його частину:",
-  "command_help": "Я показую інформацію про погоду в обраному місті. \uD83C\uDF26\n\nІнформація оновлюється автоматично кожні 3 години.\n\nЩоб налаштувати погоду, натисни /start\n\nЩоб зупинити бота і видалити всі дані, натисни /stop",
-  "command_stop": "❌ Усі твої дані видалені.\n\nЩоб запустити бота знову, натисни /start",
-  "city_search_success": "",
-  "city_search_error": "",
-  "temperature_units": ""
+  "dialog_command_start": "Давай налаштуємо погоду! \uD83C\uDF26\n\nНапиши назву міста:",
+  "dialog_command_stop": "❌ Оновлення даних про погоду зупинено.\n\nЩоб запустити бота знову, натисни /start",
+  "dialog_message_select_city": "\uD83D\uDD0E Шукаю..",
+  "dialog_message_select_city_error": "❌ Я не знайшов жодного міста!\n\nСпробуй змінити назву міста:",
+  "dialog_message_select_city_success": "\uD83C\uDFD9 Вибери необхідне місто:",
+  "dialog_input_another_city": "◀️ Вибрати інше місто",
+  "dialog_choice_of_temperature_units": "\uD83C\uDF21 Обери одиниці виміру температури:",
+  "dialog_save_weather_settings": "\uD83C\uDF26 Налаштування погоди завершено!\n\nДані будуть оновлюватися автоматично кожні 3 години."
 }

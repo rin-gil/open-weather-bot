@@ -1,8 +1,10 @@
 {
-  "command_start": "Let's set the weather! \uD83C\uDF26\n\nWrite the full name of the city or part of it:",
-  "command_help": "I'm showing the weather information for the selected city. \uD83C\uDF26\n\nThe information is updated automatically every 3 hours.\n\nTo set the weather, press /start\n\nTo stop bot and delete all your data, press /stop",
-  "command_stop": "❌ All your data has been deleted.\n\nIn order to start the bot again, press /start",
-  "city_search_success": "",
-  "city_search_error": "",
-  "temperature_units": ""
+  "dialog_command_start": "Let's set the weather! \uD83C\uDF26\n\nWrite the name of the city:",
+  "dialog_command_stop": "❌ The weather update has been stopped.\n\nIn order to start the bot again, press /start",
+  "dialog_message_select_city": "\uD83D\uDD0E Searching..",
+  "dialog_message_select_city_error": "❌ I couldn't find a single city!\n\nTry changing the name of the city:",
+  "dialog_message_select_city_success": "\uD83C\uDFD9 Select the desired city:",
+  "dialog_input_another_city": "◀️ Select another city",
+  "dialog_choice_of_temperature_units": "\uD83C\uDF21 Choose units of temperature measurement:",
+  "dialog_save_weather_settings": "\uD83C\uDF26 The weather setup is complete!\n\nThe data will be updated automatically every 3 hours."
 }
