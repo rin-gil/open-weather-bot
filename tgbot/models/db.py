@@ -57,6 +57,17 @@ async def save_dialog_message_id(user_id: int, dialog_message_id: int) -> None:
         await db.commit()
 
 
+async def save_user_weather_settings(data: dict[str, int | str]) -> None:
+    """
+    Saves the id of the dialog message with the user,
+    if the user exists in the database, updates the id of the dialog message
+
+    :param data: dictionary with weather settings
+    :return: None
+    """
+    pass
+
+
 async def delete_user_from_db(user_id: int) -> None:
     """
     Deletes a user from the database

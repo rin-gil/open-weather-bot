@@ -70,6 +70,6 @@ async def get_list_cities(city_name: str) -> list[dict]:
             return result
 
 
-async def get_weather():
+async def get_weather(user_id: int) -> str:
     # TODO сделать вывод информации о погоде
     return 'текущая погода'

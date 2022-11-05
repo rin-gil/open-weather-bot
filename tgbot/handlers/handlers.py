@@ -1,4 +1,5 @@
 """ Handling messages from bot users """
+
 from asyncio import sleep
 
 from aiogram import Dispatcher, types
@@ -9,7 +10,8 @@ from aiogram.utils.exceptions import MessageToDeleteNotFound, MessageIdentifierN
 from tgbot.keyboards.inline import generate_cities_keyboard, generate_temperature_units_keyboard
 from tgbot.misc.locale import get_dialog_message_answer
 from tgbot.misc.states import TextInput
-from tgbot.models.db import get_dialog_message_id, save_dialog_message_id, delete_user_from_db
+from tgbot.models.db import get_dialog_message_id, save_dialog_message_id, delete_user_from_db, \
+    save_user_weather_settings
 from tgbot.services.weather_api import get_list_cities, get_weather
 
 
@@ -66,6 +68,8 @@ async def dialog_command_stop(message: Message, state: FSMContext) -> None:
     """
     await message.delete()
     await state.reset_state()
+    async with state.proxy() as data:
+        data.clear()
     dialog_message_id: int = await _del_old_dialog_message_and_send_new(
         message=message,
         old_dialog_message_id=await get_dialog_message_id(user_id=message.from_user.id),
@@ -166,11 +170,9 @@ async def dialog_save_weather_settings(call: CallbackQuery, state: FSMContext) -
                       show_alert=True,
                       cache_time=1)
     async with state.proxy() as data:
-        print(data)
-
-        # TODO сделать сохранение пользователя в БД
-
-        await call.bot.edit_message_text(text=await get_weather(),
+        data['temperature_units']: str = 'metric' if call.data.removeprefix('temperature_units=') == 'c' else 'imperial'
+        await save_user_weather_settings(data=data.as_dict())
+        await call.bot.edit_message_text(text=await get_weather(user_id=call.message.chat.id),
                                          chat_id=call.message.chat.id,
                                          message_id=call.message.message_id)
         data.clear()
