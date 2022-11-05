@@ -1,6 +1,6 @@
 {
   "dialog_command_start": "Давай налаштуємо погоду! \uD83C\uDF26\n\nНапиши назву міста:",
-  "dialog_command_stop": "❌ Оновлення даних про погоду зупинено.\n\nЩоб запустити бота знову, натисни /start",
+  "dialog_command_stop": "ℹ️ Усі ваші дані видалено.",
   "dialog_message_select_city": "\uD83D\uDD0E Шукаю..",
   "dialog_message_select_city_error": "❌ Я не знайшов жодного міста!\n\nСпробуй змінити назву міста:",
   "dialog_message_select_city_success": "\uD83C\uDFD9 Вибери необхідне місто:",

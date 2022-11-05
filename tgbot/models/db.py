@@ -55,3 +55,16 @@ async def save_dialog_message_id(user_id: int, dialog_message_id: int) -> None:
             ON CONFLICT (user_id) DO UPDATE SET dialog_message_id=excluded.dialog_message_id""", values
         )
         await db.commit()
+
+
+async def delete_user_from_db(user_id: int) -> None:
+    """
+    Deletes a user from the database
+
+    :param user_id: user id
+    :return:
+    """
+    async with connect(database=DB_NAME) as db:
+        value: tuple = (user_id,)
+        await db.execute("""DELETE FROM users WHERE user_id=?;""", value)
+        await db.commit()

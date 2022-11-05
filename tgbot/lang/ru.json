@@ -1,10 +1,10 @@
 {
   "dialog_command_start": "Давай настроим погоду! \uD83C\uDF26\n\nНапиши название города:",
-  "dialog_command_stop": "❌ Обновление данных о погоде остановлено.\n\nЧтобы запустить бота снова, нажми /start",
+  "dialog_command_stop": "ℹ️ Все ваши данные удалены.",
   "dialog_message_select_city": "\uD83D\uDD0E Ищу..",
   "dialog_message_select_city_error": "❌ Я не нашел ни одного города!\n\nПопробуй изменить название города:",
   "dialog_message_select_city_success": "\uD83C\uDFD9 Выбери требуемый город:",
-  "dialog_input_another_city": "◀️ Выбрать другой город",
+  "dialog_input_another_city": "◀️Выбрать другой город",
   "dialog_choice_of_temperature_units": "\uD83C\uDF21 Выбери единицы измерения температуры:",
   "dialog_save_weather_settings": "\uD83C\uDF26 Настройка погоды завершена!\n\nДанные будут обновлятися автоматически каждые 3 часа."
 }

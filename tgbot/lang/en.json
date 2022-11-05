@@ -1,6 +1,6 @@
 {
   "dialog_command_start": "Let's set the weather! \uD83C\uDF26\n\nWrite the name of the city:",
-  "dialog_command_stop": "❌ The weather update has been stopped.\n\nIn order to start the bot again, press /start",
+  "dialog_command_stop": "ℹ️ All of your data has been deleted.",
   "dialog_message_select_city": "\uD83D\uDD0E Searching..",
   "dialog_message_select_city_error": "❌ I couldn't find a single city!\n\nTry changing the name of the city:",
   "dialog_message_select_city_success": "\uD83C\uDFD9 Select the desired city:",
