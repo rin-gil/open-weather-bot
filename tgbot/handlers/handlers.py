@@ -12,7 +12,7 @@ from tgbot.misc.locale import get_dialog_message_answer
 from tgbot.misc.states import TextInput
 from tgbot.models.db import get_dialog_message_id, save_dialog_message_id, delete_user_from_db, \
     save_user_weather_settings
-from tgbot.services.weather_api import get_list_cities, get_weather
+from tgbot.services.weather_api import get_list_cities, get_weather_data
 
 
 async def _del_old_dialog_message_and_send_new(message: Message, old_dialog_message_id: int, message_text: str) -> int:
@@ -98,7 +98,7 @@ async def dialog_message_select_city(message: types.Message, state: FSMContext) 
             chat_id=data['user_id'],
             message_id=data['dialog_message_id']
         )
-        cities_found: list = await get_list_cities(city_name=message.text)
+        cities_found: list = await get_list_cities(city_name=message.text, user_language_code=data['user_language'])
         if len(cities_found) == 0:
             await message.bot.edit_message_text(
                 text=await get_dialog_message_answer(user_language_code=data['user_language'],
@@ -145,9 +145,8 @@ async def dialog_choice_of_temperature_units(call: CallbackQuery, state: FSMCont
     """
     await call.answer(cache_time=1)
     async with state.proxy() as data:
-        coordinates: str = call.data.removeprefix('coordinates_of_the_city=')
-        data['city_latitude']: str = coordinates.partition('&')[0]
-        data['city_longitude']: str = coordinates.partition('&')[2]
+        city_data: str = call.data.removeprefix('city_coords_and_name=')
+        data['city_latitude'], data['city_longitude'], data['city_local_name'] = city_data.split('&')
         await call.bot.edit_message_text(
             text=await get_dialog_message_answer(user_language_code=call.from_user.language_code,
                                                  dialog_message_name='dialog_choice_of_temperature_units'),
@@ -172,7 +171,7 @@ async def dialog_save_weather_settings(call: CallbackQuery, state: FSMContext) -
     async with state.proxy() as data:
         data['temperature_units']: str = 'metric' if call.data.removeprefix('temperature_units=') == 'c' else 'imperial'
         await save_user_weather_settings(data=data.as_dict())
-        await call.bot.edit_message_text(text=await get_weather(user_id=call.message.chat.id),
+        await call.bot.edit_message_text(text=await get_weather_data(user_id=call.message.chat.id),
                                          chat_id=call.message.chat.id,
                                          message_id=call.message.message_id)
         data.clear()
@@ -199,6 +198,6 @@ def register_handlers(dp: Dispatcher) -> None:
     dp.register_message_handler(dialog_command_stop, commands='stop', state='*')
     dp.register_message_handler(dialog_message_select_city, state=TextInput.EnterCityName)
     dp.register_callback_query_handler(back_to_input_city_name, text='input_another_city')
-    dp.register_callback_query_handler(dialog_choice_of_temperature_units, text_contains='coordinates_of_the_city=')
+    dp.register_callback_query_handler(dialog_choice_of_temperature_units, text_contains='city_coords_and_name=')
     dp.register_callback_query_handler(dialog_save_weather_settings, text_contains='temperature_units=')
     dp.register_message_handler(dialog_unprocessed, state='*', content_types=types.ContentTypes.ANY)

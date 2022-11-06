@@ -16,6 +16,7 @@ async def db_init() -> None:
             user_id INTEGER PRIMARY KEY,
             dialog_message_id INTEGER NOT NULL,
             language_code VARCHAR(2),
+            city_local_name VARCHAR(72),
             city_latitude VARCHAR(11),
             city_longitude VARCHAR(11),
             temperature_units VARCHAR(8)
@@ -55,6 +56,29 @@ async def save_dialog_message_id(user_id: int, dialog_message_id: int) -> None:
         await db.commit()
 
 
+async def get_user_weather_settings(user_id: int) -> dict:
+    """
+    Returns the user's weather settings
+
+    :param user_id: user id
+    :return: dictionary with user weather settings
+    """
+    value: tuple = (user_id,)
+    async with connect(database=DB_NAME) as db:
+        async with db.execute("""SELECT * FROM users WHERE user_id=?""", value) as cursor:
+            async for row in cursor:
+                return dict(
+                    {'user_id': row[0],
+                     'dialog_message_id': row[1],
+                     'language_code': row[2],
+                     'city_local_name': row[3],
+                     'city_latitude': row[4],
+                     'city_longitude': row[5],
+                     'temperature_unit': row[6]
+                     }
+                )
+
+
 async def save_user_weather_settings(data: dict[str, int | str]) -> None:
     """
     Saves the id of the dialog message with the user,
@@ -67,6 +91,7 @@ async def save_user_weather_settings(data: dict[str, int | str]) -> None:
         values: tuple = (
             data.get('dialog_message_id'),
             data.get('user_language'),
+            data.get('city_local_name'),
             data.get('city_latitude'),
             data.get('city_longitude'),
             data.get('temperature_units'),
@@ -74,7 +99,12 @@ async def save_user_weather_settings(data: dict[str, int | str]) -> None:
         )
         await db.execute(
             """UPDATE users
-            SET dialog_message_id=?, language_code=?, city_latitude=?, city_longitude=?, temperature_units=?
+            SET dialog_message_id=?,
+            language_code=?,
+            city_local_name=?,
+            city_latitude=?,
+            city_longitude=?,
+            temperature_units=?
             WHERE user_id=?;""", values
         )
         await db.commit()

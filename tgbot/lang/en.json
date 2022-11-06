@@ -6,5 +6,16 @@
   "dialog_message_select_city_success": "\uD83C\uDFD9 Select the desired city:",
   "dialog_input_another_city": "◀️ Select another city",
   "dialog_choice_of_temperature_units": "\uD83C\uDF21 Choose units of temperature measurement:",
-  "dialog_save_weather_settings": "\uD83C\uDF26 The weather setup is complete!\n\nThe data will be updated automatically every 3 hours."
+  "dialog_save_weather_settings": "\uD83C\uDF26 The weather setup is complete!\n\nThe data will be updated automatically every 3 hours.",
+
+  "error_weather_data": "❌ Error when receiving weather data!",
+
+  "weather_feels_like": "feels like",
+  "weather_humidity": "Humidity",
+  "weather_wind_speed": "Wind speed",
+  "weather_wind_gust": "gusts to",
+  "weather_pressure": "Pressure",
+  "weather_visibility": "Visibility",
+  "weather_sunrise": "Sunrise",
+  "weather_sunset": "sunset"
 }

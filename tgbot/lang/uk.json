@@ -6,5 +6,16 @@
   "dialog_message_select_city_success": "\uD83C\uDFD9 Вибери необхідне місто:",
   "dialog_input_another_city": "◀️ Вибрати інше місто",
   "dialog_choice_of_temperature_units": "\uD83C\uDF21 Обери одиниці виміру температури:",
-  "dialog_save_weather_settings": "\uD83C\uDF26 Налаштування погоди завершено!\n\nДані будуть оновлюватися автоматично кожні 3 години."
+  "dialog_save_weather_settings": "\uD83C\uDF26 Налаштування погоди завершено!\n\nДані будуть оновлюватися автоматично кожні 3 години.",
+
+  "error_weather_data": "❌ Помилка під час отримання даних про погоду!",
+
+  "weather_feels_like": "відчувається як",
+  "weather_humidity": "Вологість",
+  "weather_wind_speed": "Швидкість вітру",
+  "weather_wind_gust": "пориви до",
+  "weather_pressure": "Тиск",
+  "weather_visibility": "Видимість",
+  "weather_sunrise": "Світанок",
+  "weather_sunset": "захід"
 }
