@@ -4,7 +4,7 @@ from asyncio import sleep
 
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, InputFile
 from aiogram.utils.exceptions import MessageToDeleteNotFound, MessageIdentifierNotSpecified
 
 from tgbot.keyboards.inline import generate_cities_keyboard, generate_temperature_units_keyboard
@@ -168,12 +168,16 @@ async def dialog_save_weather_settings(call: CallbackQuery, state: FSMContext) -
                                                            dialog_message_name='dialog_save_weather_settings'),
                       show_alert=True,
                       cache_time=1)
+    await call.bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
     async with state.proxy() as data:
         data['temperature_units']: str = 'metric' if call.data.removeprefix('temperature_units=') == 'c' else 'imperial'
+        new_dialog_message: Message = await call.bot.send_photo(
+            chat_id=call.message.chat.id,
+            photo='https://i.ibb.co/2tP1VVh/stub-image.png',
+            caption=await get_weather_data(user_id=call.message.chat.id),
+            disable_notification=True)
+        data['dialog_message_id']: int = new_dialog_message.message_id
         await save_user_weather_settings(data=data.as_dict())
-        await call.bot.edit_message_text(text=await get_weather_data(user_id=call.message.chat.id),
-                                         chat_id=call.message.chat.id,
-                                         message_id=call.message.message_id)
         data.clear()
 
 

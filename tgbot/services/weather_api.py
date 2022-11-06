@@ -136,12 +136,12 @@ async def _format_weather_data(weather_data: dict,
                                                          dialog_message_name='weather_sunset')
 
     return f'<b>{emoji} {city_local_name}, {time}</b>\n\n' \
-           f'<b>{temp} {temp_units}</b>, {feels_like_string} <b>{temp_feels_like} {temp_units}</b>, {description}\n\n' \
-           f'{humidity_string}: <b>{humidity} %</b>\n' \
-           f'{wind_speed_string}: <b>{wind_speed} {wind_units}</b>, {wind_gust_string} <b>{wind_gust} {wind_units}</b>\n' \
-           f'{pressure_string}: <b>{pressure} hPa</b>\n' \
-           f'{visibility_string}: <b>{visibility} km</b>\n\n' \
-           f'{sunrise_string}: <b>{sunrise}</b>, {sunset_string} <b>{sunset}</b>'
+           f'🌡 <b>{temp} {temp_units}</b>, {feels_like_string} <b>{temp_feels_like} {temp_units}</b>, {description}\n\n' \
+           f'💦 {humidity_string}: <b>{humidity} %</b>\n' \
+           f'💨 {wind_speed_string}: <b>{wind_speed} {wind_units}</b>, {wind_gust_string} <b>{wind_gust} {wind_units}</b>\n' \
+           f'🌡 {pressure_string}: <b>{pressure} hPa</b>\n' \
+           f'🌫️ {visibility_string}: <b>{visibility} km</b>\n\n' \
+           f'🌅 {sunrise_string}: <b>{sunrise}</b>, 🌇 {sunset_string} <b>{sunset}</b>'
 
 
 async def get_list_cities(city_name: str, user_language_code: str) -> list[dict]:
