@@ -144,6 +144,36 @@ async def _format_weather_data(weather_data: dict,
            f'🌅 {sunrise_string}: <b>{sunrise}</b>, 🌇 {sunset_string} <b>{sunset}</b>'
 
 
+async def _get_current_weather_data(user_id: int) -> str:
+    """
+    Gets current weather data from the OpenWeatherMap service and outputs them in formatted form
+
+    :param user_id: user id
+    :return: formatted current weather data
+    """
+    users_weather_settings: dict = await get_user_weather_settings(user_id=user_id)
+    async with ClientSession() as session:
+        async with session.get(url=f'{CURRENT_WEATHER_API_URL}'
+                                   f'?lat={users_weather_settings.get("city_latitude")}'
+                                   f'&lon={users_weather_settings.get("city_longitude")}'
+                                   f'&lang={users_weather_settings.get("language_code")}'
+                                   f'&units={users_weather_settings.get("temperature_unit")}'
+                                   f'&appid={API_KEY}') as responce:
+            if responce.status == 200:
+                weather_data: dict = await responce.json()
+                return await _format_weather_data(
+                    weather_data=weather_data,
+                    temperature_unit=users_weather_settings.get("temperature_unit"),
+                    city_local_name=users_weather_settings.get("city_local_name"),
+                    user_language_code=users_weather_settings.get("language_code")
+                )
+            else:
+                error: dict = await responce.json()
+                logger.error('Error when requesting WeatherGeocodeAPI: %s', error.get('message'))
+                return await get_dialog_message_answer(user_language_code=users_weather_settings.get("language_code"),
+                                                       dialog_message_name='error_weather_data')
+
+
 async def get_list_cities(city_name: str, user_language_code: str) -> list[dict]:
     """
     Returns the list of found cities
@@ -173,26 +203,6 @@ async def get_weather_data(user_id: int) -> str:
     Gets weather data from the OpenWeatherMap service and outputs them in formatted form
 
     :param user_id: user id
-    :return: Formatted weather data
+    :return: formatted weather data
     """
-    users_weather_settings: dict = await get_user_weather_settings(user_id=user_id)
-    async with ClientSession() as session:
-        async with session.get(url=f'{CURRENT_WEATHER_API_URL}'
-                                   f'?lat={users_weather_settings.get("city_latitude")}'
-                                   f'&lon={users_weather_settings.get("city_longitude")}'
-                                   f'&lang={users_weather_settings.get("language_code")}'
-                                   f'&units={users_weather_settings.get("temperature_unit")}'
-                                   f'&appid={API_KEY}') as responce:
-            if responce.status == 200:
-                weather_data: dict = await responce.json()
-                return await _format_weather_data(
-                    weather_data=weather_data,
-                    temperature_unit=users_weather_settings.get("temperature_unit"),
-                    city_local_name=users_weather_settings.get("city_local_name"),
-                    user_language_code=users_weather_settings.get("language_code")
-                )
-            else:
-                error: dict = await responce.json()
-                logger.error('Error when requesting WeatherGeocodeAPI: %s', error.get('message'))
-                return await get_dialog_message_answer(user_language_code=users_weather_settings.get("language_code"),
-                                                       dialog_message_name='error_weather_data')
+    return await _get_current_weather_data(user_id=user_id)
