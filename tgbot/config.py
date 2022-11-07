@@ -37,7 +37,12 @@ class Config:
     weather_api: WeatherAPI
 
 
-def load_config():
+def load_config() -> Config:
+    """
+    Loads tokens from environment variables
+
+    :return: object of class Config
+    """
     env = Env()
     env.read_env()
     return Config(
