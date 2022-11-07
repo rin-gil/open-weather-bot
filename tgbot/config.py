@@ -23,14 +23,29 @@ logging.basicConfig(
 @dataclass
 class TgBot:
     token: str
+    admin_ids: tuple[int]
+
+
+@dataclass
+class WeatherAPI:
+    token: str
 
 
 @dataclass
 class Config:
     tg_bot: TgBot
+    weather_api: WeatherAPI
 
 
 def load_config():
     env = Env()
     env.read_env()
-    return Config(tg_bot=TgBot(token=env.str('BOT_TOKEN')))
+    return Config(
+        tg_bot=TgBot(
+            token=env.str('BOT_TOKEN'),
+            admin_ids=tuple(map(int, env.list("ADMINS")))
+        ),
+        weather_api=WeatherAPI(
+            token=env.str('WEATHER_API_TOKEN')
+        )
+    )

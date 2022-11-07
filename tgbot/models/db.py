@@ -1,5 +1,6 @@
 """ Functions for working with the database """
 
+from datetime import datetime
 from aiosqlite import connect
 from tgbot.config import DB_NAME
 
@@ -20,6 +21,12 @@ async def db_init() -> None:
             city_latitude VARCHAR(11),
             city_longitude VARCHAR(11),
             temperature_units VARCHAR(8)
+            );"""
+        )
+        await db.execute(
+            """CREATE TABLE IF NOT EXISTS api_request_counters (
+            month VARCHAR(7) PRIMARY KEY,
+            counter INTEGER NOT NULL DEFAULT 0
             );"""
         )
 
@@ -54,6 +61,33 @@ async def save_dialog_message_id(user_id: int, dialog_message_id: int) -> None:
         await db.execute("""INSERT INTO users (user_id, dialog_message_id) VALUES (?, ?)
             ON CONFLICT (user_id) DO UPDATE SET dialog_message_id=excluded.dialog_message_id;""", values)
         await db.commit()
+
+
+async def increase_api_counter() -> None:
+    """
+    Increases OpenWeatherMap API request counter value
+
+    :return: None
+    """
+    async with connect(database=DB_NAME) as db:
+        values: tuple = (datetime.now().strftime('%Y.%m'), 1)
+        await db.execute("""INSERT INTO api_request_counters (month, counter) VALUES (?, ?)
+            ON CONFLICT (month) DO UPDATE SET counter=counter+1;""", values)
+        await db.commit()
+
+
+async def get_current_api_counter_value() -> int:
+    """
+    Returns the number of requests to OpenWeatherAPI made since the beginning of the month
+
+    :return: number of requests to OpenWeatherAPI
+    """
+    async with connect(database=DB_NAME) as db:
+        value: tuple = (datetime.now().strftime('%Y.%m'),)
+        async with db.execute("""SELECT counter FROM api_request_counters WHERE month=?;""", value) as cursor:
+            async for row in cursor:
+                api_counter_value: int = row[0]
+        return api_counter_value
 
 
 async def get_user_weather_settings(user_id: int) -> dict:

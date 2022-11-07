@@ -8,6 +8,9 @@
   "dialog_choice_of_temperature_units": "\uD83C\uDF21 Обери одиниці виміру температури:",
   "dialog_save_weather_settings": "\uD83C\uDF26 Налаштування погоди завершено!\n\nДані будуть оновлюватися автоматично кожні 3 години.",
 
+  "dialog_admin_keyboard": "Статистика",
+  "dialog_admin_statistics": "З початку місяця---запитів витрачено---з",
+
   "error_weather_data": "❌ Помилка під час отримання даних про погоду!",
 
   "weather_feels_like": "відчувається як",

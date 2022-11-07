@@ -40,3 +40,7 @@ if __name__ == '__main__':
         main()
     except (KeyboardInterrupt, SystemExit):
         logger.info('Bot stopped!')
+    except Exception as ex:
+        print(ex)
+        print(Exception.__dict__)
+        logger.error(ex)

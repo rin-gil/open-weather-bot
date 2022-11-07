@@ -4,15 +4,19 @@ from asyncio import sleep
 
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, CallbackQuery, InputFile
+from aiogram.types import Message, CallbackQuery
 from aiogram.utils.exceptions import MessageToDeleteNotFound, MessageIdentifierNotSpecified
 
-from tgbot.keyboards.inline import generate_cities_keyboard, generate_temperature_units_keyboard
+from tgbot.config import load_config
+from tgbot.keyboards.inline import generate_cities_keyboard, generate_temperature_units_keyboard, \
+    generate_admin_keyboard
 from tgbot.misc.locale import get_dialog_message_answer
 from tgbot.misc.states import TextInput
 from tgbot.models.db import get_dialog_message_id, save_dialog_message_id, delete_user_from_db, \
-    save_user_weather_settings
+    save_user_weather_settings, get_current_api_counter_value
 from tgbot.services.weather_api import get_list_cities, get_weather_data
+
+ADMINS: tuple[int] = load_config().tg_bot.admin_ids
 
 
 async def _del_old_dialog_message_and_send_new(message: Message, old_dialog_message_id: int, message_text: str) -> int:
@@ -171,14 +175,37 @@ async def dialog_save_weather_settings(call: CallbackQuery, state: FSMContext) -
     await call.bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
     async with state.proxy() as data:
         data['temperature_units']: str = 'metric' if call.data.removeprefix('temperature_units=') == 'c' else 'imperial'
+        await save_user_weather_settings(data=data.as_dict())
         new_dialog_message: Message = await call.bot.send_photo(
             chat_id=call.message.chat.id,
             photo='https://i.ibb.co/2tP1VVh/stub-image.png',
             caption=await get_weather_data(user_id=call.message.chat.id),
-            disable_notification=True)
-        data['dialog_message_id']: int = new_dialog_message.message_id
-        await save_user_weather_settings(data=data.as_dict())
+            disable_notification=True,
+            reply_markup=await generate_admin_keyboard(
+                user_language_code=call.from_user.language_code
+            ) if call.message.chat.id in ADMINS else None
+        )
+        await save_dialog_message_id(user_id=call.message.chat.id, dialog_message_id=new_dialog_message.message_id)
         data.clear()
+
+
+async def dialog_admin_statistics(call: CallbackQuery) -> None:
+    """
+    Displays information about the number of requests made to OpenWeatherMap API since the beginning of the month
+
+    :param call: CallbackQuery
+    :return: None
+    """
+    request_counter: int = await get_current_api_counter_value()
+    dialog_admin_statistics_message: str = await get_dialog_message_answer(
+        user_language_code=call.from_user.language_code,
+        dialog_message_name='dialog_admin_statistics'
+    )
+    phrases: list = dialog_admin_statistics_message.split('---')
+    text = f'ℹ {phrases[0]}\n' \
+           f'{round((request_counter/1000000)*100)}% {phrases[1]}\n' \
+           f'({"{0:,}".format(request_counter).replace(",", " ")} {phrases[2]} 1 000 000)'
+    await call.answer(text=text, show_alert=True, cache_time=1)
 
 
 async def dialog_unprocessed(message: Message) -> None:
@@ -204,4 +231,5 @@ def register_handlers(dp: Dispatcher) -> None:
     dp.register_callback_query_handler(back_to_input_city_name, text='input_another_city')
     dp.register_callback_query_handler(dialog_choice_of_temperature_units, text_contains='city_coords_and_name=')
     dp.register_callback_query_handler(dialog_save_weather_settings, text_contains='temperature_units=')
+    dp.register_callback_query_handler(dialog_admin_statistics, text='admin_keyboard')
     dp.register_message_handler(dialog_unprocessed, state='*', content_types=types.ContentTypes.ANY)

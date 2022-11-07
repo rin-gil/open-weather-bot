@@ -2,15 +2,12 @@
 
 from aiohttp import ClientSession
 from datetime import datetime
-from environs import Env
 
-from tgbot.config import logger
+from tgbot.config import logger, load_config
 from tgbot.misc.locale import get_dialog_message_answer
-from tgbot.models.db import get_user_weather_settings
+from tgbot.models.db import get_user_weather_settings, increase_api_counter
 
-env = Env()
-env.read_env()
-API_KEY: str = env.str('WEATHER_API')
+API_KEY: str = load_config().weather_api.token
 GEOCODING_API_URL: str = 'https://api.openweathermap.org/geo/1.0/direct'
 CURRENT_WEATHER_API_URL: str = 'https://api.openweathermap.org/data/2.5/weather'
 
@@ -159,6 +156,7 @@ async def _get_current_weather_data(user_id: int) -> str:
                                    f'&lang={users_weather_settings.get("language_code")}'
                                    f'&units={users_weather_settings.get("temperature_unit")}'
                                    f'&appid={API_KEY}') as responce:
+            await increase_api_counter()
             if responce.status == 200:
                 weather_data: dict = await responce.json()
                 return await _format_weather_data(
@@ -188,6 +186,7 @@ async def get_list_cities(city_name: str, user_language_code: str) -> list[dict]
                                    f'?q={await _correct_user_input(string=city_name)}'
                                    f'&limit=5'
                                    f'&appid={API_KEY}') as responce:
+            await increase_api_counter()
             if responce.status == 200:
                 list_cities: list[dict] = await responce.json()
                 if len(list_cities) != 0:

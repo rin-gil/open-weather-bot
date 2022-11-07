@@ -36,3 +36,18 @@ async def generate_temperature_units_keyboard() -> InlineKeyboardMarkup:
     keyboard_temperature_units.insert(InlineKeyboardButton(text='°C', callback_data='temperature_units=c'))
     keyboard_temperature_units.insert(InlineKeyboardButton(text='°F', callback_data='temperature_units=f'))
     return keyboard_temperature_units
+
+
+async def generate_admin_keyboard(user_language_code: str) -> InlineKeyboardMarkup:
+    """
+    Generates keyboard for administrators
+
+    :return: Generated keyboard (object of InlineKeyboardMarkup class)
+    """
+    keyboard_admin: InlineKeyboardMarkup = InlineKeyboardMarkup(row_width=1)
+    keyboard_admin.insert(InlineKeyboardButton(
+        text=await get_dialog_message_answer(user_language_code=user_language_code,
+                                             dialog_message_name='dialog_admin_keyboard'),
+        callback_data='admin_keyboard')
+    )
+    return keyboard_admin
