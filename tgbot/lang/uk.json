@@ -6,6 +6,7 @@
   "dialog_message_select_city_success": "\uD83C\uDFD9 Вибери необхідне місто:",
   "dialog_input_another_city": "◀️ Вибрати інше місто",
   "dialog_choice_of_temperature_units": "\uD83C\uDF21 Обери одиниці виміру температури:",
+  "dialog_loading_weather_data": "⏳ Завантажую дані про погоду...",
   "dialog_save_weather_settings": "\uD83C\uDF26 Налаштування погоди завершено!\n\nДані будуть оновлюватися автоматично кожні 3 години.",
 
   "dialog_admin_keyboard": "Статистика",

@@ -14,7 +14,7 @@ from tgbot.misc.locale import get_dialog_message_answer
 from tgbot.misc.states import TextInput
 from tgbot.models.db import get_dialog_message_id, save_dialog_message_id, delete_user_from_db, \
     save_user_weather_settings, get_current_api_counter_value
-from tgbot.services.weather_api import get_list_cities, get_weather_data
+from tgbot.services.weather_api import get_list_cities, get_weather_forecast_data, get_current_weather_data
 
 ADMINS: tuple[int] = load_config().tg_bot.admin_ids
 
@@ -172,19 +172,25 @@ async def dialog_save_weather_settings(call: CallbackQuery, state: FSMContext) -
                                                            dialog_message_name='dialog_save_weather_settings'),
                       show_alert=True,
                       cache_time=1)
-    await call.bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+
     async with state.proxy() as data:
         data['temperature_units']: str = 'metric' if call.data.removeprefix('temperature_units=') == 'c' else 'imperial'
         await save_user_weather_settings(data=data.as_dict())
+        await call.bot.edit_message_text(
+            text=await get_dialog_message_answer(user_language_code=call.from_user.language_code,
+                                                 dialog_message_name='dialog_loading_weather_data'),
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id
+        )
         new_dialog_message: Message = await call.bot.send_photo(
             chat_id=call.message.chat.id,
-            photo='https://i.ibb.co/2tP1VVh/stub-image.png',
-            caption=await get_weather_data(user_id=call.message.chat.id),
-            disable_notification=True,
+            photo=await get_weather_forecast_data(user_id=call.message.chat.id),
+            caption=await get_current_weather_data(user_id=call.message.chat.id),
             reply_markup=await generate_admin_keyboard(
                 user_language_code=call.from_user.language_code
             ) if call.message.chat.id in ADMINS else None
         )
+        await call.bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
         await save_dialog_message_id(user_id=call.message.chat.id, dialog_message_id=new_dialog_message.message_id)
         data.clear()
 
@@ -204,7 +210,7 @@ async def dialog_admin_statistics(call: CallbackQuery) -> None:
     phrases: list = dialog_admin_statistics_message.split('---')
     text = f'ℹ {phrases[0]}\n' \
            f'{round((request_counter / 1000000) * 100)}% {phrases[1]}\n' \
-           f'({"{0:,}".format(request_counter).replace(",", " ")} {phrases[2]} 1 000 000)'
+           f'{"{0:,}".format(request_counter).replace(",", " ")} {phrases[2]} 1 000 000'
     await call.answer(text=text, show_alert=True, cache_time=1)
 
 
