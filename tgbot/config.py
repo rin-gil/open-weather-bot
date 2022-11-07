@@ -11,6 +11,7 @@ BASE_DIR: Path = Path(__file__).resolve().parent
 DB_NAME: str = path.join(BASE_DIR, 'db.sqlite3')
 LANGUAGES_DIR: str = path.join(BASE_DIR, 'lang')
 BOT_LOGO = path.join(BASE_DIR, 'assets/bot_logo.png')
+OPEN_WEATHER_LOGO = path.join(BASE_DIR, 'assets/openweather-logo.png')
 LOG_FILE: str = path.join(BASE_DIR, 'OpenWeatherBot.log')
 
 logger = logging.getLogger(__name__)

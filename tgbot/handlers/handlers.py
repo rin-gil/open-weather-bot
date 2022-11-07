@@ -4,10 +4,10 @@ from asyncio import sleep
 
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, InputFile
 from aiogram.utils.exceptions import MessageToDeleteNotFound, MessageIdentifierNotSpecified
 
-from tgbot.config import load_config
+from tgbot.config import load_config, OPEN_WEATHER_LOGO
 from tgbot.keyboards.inline import generate_cities_keyboard, generate_temperature_units_keyboard, \
     generate_admin_keyboard
 from tgbot.misc.locale import get_dialog_message_answer
@@ -60,6 +60,23 @@ async def dialog_command_start(message: Message, state: FSMContext) -> None:
         )
     await TextInput.EnterCityName.set()  # Allow user input of text
     await save_dialog_message_id(user_id=data['user_id'], dialog_message_id=data['dialog_message_id'])
+
+
+async def dialog_command_about(message: Message) -> None:
+    """
+    Handles command /about from the user
+
+    :param message: message from the user
+    :return: None
+    """
+    await message.delete()
+    about_message = await message.bot.send_photo(
+        chat_id=message.from_user.id,
+        photo=InputFile(OPEN_WEATHER_LOGO),
+        caption='Weather data provided by <a href="https://openweathermap.org/">OpenWeather</a>'
+    )
+    await sleep(10)
+    await message.bot.delete_message(chat_id=message.from_user.id, message_id=about_message.message_id)
 
 
 async def dialog_command_stop(message: Message, state: FSMContext) -> None:
@@ -232,6 +249,7 @@ def register_handlers(dp: Dispatcher) -> None:
     :return: None
     """
     dp.register_message_handler(dialog_command_start, commands='start', state='*')
+    dp.register_message_handler(dialog_command_about, commands='about', state='*')
     dp.register_message_handler(dialog_command_stop, commands='stop', state='*')
     dp.register_message_handler(dialog_message_select_city, state=TextInput.EnterCityName)
     dp.register_callback_query_handler(back_to_input_city_name, text='input_another_city')
