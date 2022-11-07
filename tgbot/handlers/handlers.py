@@ -203,7 +203,7 @@ async def dialog_admin_statistics(call: CallbackQuery) -> None:
     )
     phrases: list = dialog_admin_statistics_message.split('---')
     text = f'ℹ {phrases[0]}\n' \
-           f'{round((request_counter/1000000)*100)}% {phrases[1]}\n' \
+           f'{round((request_counter / 1000000) * 100)}% {phrases[1]}\n' \
            f'({"{0:,}".format(request_counter).replace(",", " ")} {phrases[2]} 1 000 000)'
     await call.answer(text=text, show_alert=True, cache_time=1)
 
