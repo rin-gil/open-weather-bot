@@ -12,7 +12,7 @@ dp: Dispatcher = Dispatcher(bot=bot, storage=MemoryStorage())
 
 async def on_startup(_):
     register_handlers(dp)
-    await db.db_init()
+    await db.init()
     locale.init()
 
 

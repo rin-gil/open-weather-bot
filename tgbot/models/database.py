@@ -27,7 +27,7 @@ class Database:
         """
         self._db_path = path
 
-    async def db_init(self) -> None:
+    async def init(self) -> None:
         """ Creates a database file and a table in it """
         async with connect(database=self._db_path) as db:
             await db.execute(

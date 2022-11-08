@@ -1,11 +1,11 @@
 """ Functions for getting weather information """
 
-from aiohttp import ClientSession
 from datetime import datetime
 
-from tgbot.config import logger, load_config, BOT_LOGO, db, locale
-from tgbot.models.database import UserWeatherSettings
+from aiohttp import ClientSession
 
+from tgbot.config import db, load_config, locale, logger, BOT_LOGO
+from tgbot.models.database import UserWeatherSettings
 from tgbot.services.generate_weather_forecast_image import format_weather_forecast_image
 
 API_KEY: str = load_config().weather_api.token
