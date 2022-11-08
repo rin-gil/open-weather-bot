@@ -3,8 +3,7 @@
 from aiohttp import ClientSession
 from datetime import datetime
 
-from tgbot.config import logger, load_config, BOT_LOGO, db
-from tgbot.misc.locale import get_dialog_message_answer
+from tgbot.config import logger, load_config, BOT_LOGO, db, locale
 from tgbot.models.database import UserWeatherSettings
 
 from tgbot.services.generate_weather_forecast_image import format_weather_forecast_image
@@ -103,38 +102,30 @@ async def _format_current_weather_data(weather_data: dict,
     temp_units: str = '°C' if temperature_unit == 'metric' else '°F'
 
     temp_feels_like: int = round(weather_data.get('main').get('feels_like'))
-    feels_like_string: str = await get_dialog_message_answer(user_language_code=user_language_code,
-                                                             dialog_message_name='weather_feels_like')
+    feels_like_string: str = await locale.get_translate(lang=user_language_code, translation='feels_like')
 
     emoji: str = await _get_weather_emoji(weather=weather_data.get('weather')[0].get('id'))
     description: str = weather_data.get('weather')[0].get('description')
 
     humidity: int = weather_data.get('main').get('humidity')
-    humidity_string: str = await get_dialog_message_answer(user_language_code=user_language_code,
-                                                           dialog_message_name='weather_humidity')
+    humidity_string: str = await locale.get_translate(lang=user_language_code, translation='humidity')
 
     wind_speed: int = round(weather_data.get('wind').get('speed'))
     wind_gust: int = 0 if weather_data.get('wind').get('gust') is None else round(weather_data.get('wind').get('gust'))
     wind_units: str = 'm/s' if temperature_unit == 'metric' else 'mph'
-    wind_speed_string: str = await get_dialog_message_answer(user_language_code=user_language_code,
-                                                             dialog_message_name='weather_wind_speed')
-    wind_gust_string: str = await get_dialog_message_answer(user_language_code=user_language_code,
-                                                            dialog_message_name='weather_wind_gust')
+    wind_speed_string: str = await locale.get_translate(lang=user_language_code, translation='wind_speed')
+    wind_gust_string: str = await locale.get_translate(lang=user_language_code, translation='wind_gust')
 
     pressure: int = weather_data.get('main').get('pressure')
-    pressure_string: str = await get_dialog_message_answer(user_language_code=user_language_code,
-                                                           dialog_message_name='weather_pressure')
+    pressure_string: str = await locale.get_translate(lang=user_language_code, translation='pressure')
 
     visibility: float = round(weather_data.get('visibility') / 1000, 1)
-    visibility_string: str = await get_dialog_message_answer(user_language_code=user_language_code,
-                                                             dialog_message_name='weather_visibility')
+    visibility_string: str = await locale.get_translate(lang=user_language_code, translation='visibility')
 
     sunrise: str = datetime.fromtimestamp(weather_data.get('sys').get('sunrise')).strftime('%H:%M')
-    sunrise_string: str = await get_dialog_message_answer(user_language_code=user_language_code,
-                                                          dialog_message_name='weather_sunrise')
+    sunrise_string: str = await locale.get_translate(lang=user_language_code, translation='sunrise')
     sunset: str = datetime.fromtimestamp(weather_data.get('sys').get('sunset')).strftime('%H:%M')
-    sunset_string: str = await get_dialog_message_answer(user_language_code=user_language_code,
-                                                         dialog_message_name='weather_sunset')
+    sunset_string: str = await locale.get_translate(lang=user_language_code, translation='sunset')
 
     return f'<b>{emoji} {city_local_name}, {time}</b>\n\n' \
            f'🌡 <b>{temp} {temp_units}</b>, {feels_like_string} <b>{temp_feels_like} {temp_units}</b>, {description}\n\n' \
@@ -172,8 +163,7 @@ async def get_current_weather_data(user_id: int) -> str:
             else:
                 error: dict = await responce.json()
                 logger.error('Error when requesting CurrentWeatherAPI: %s', error.get('message'))
-                return await get_dialog_message_answer(user_language_code=settings.lang,
-                                                       dialog_message_name='error_weather_data')
+                return await locale.get_translate(lang=settings.lang, translation='error_weather')
 
 
 async def get_weather_forecast_data(user_id: int):

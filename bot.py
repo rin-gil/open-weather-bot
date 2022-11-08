@@ -2,7 +2,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.utils import executor
 
-from tgbot.config import load_config, logger, db
+from tgbot.config import db, load_config, locale, logger
 from tgbot.handlers.handlers import register_handlers
 
 
@@ -13,6 +13,7 @@ dp: Dispatcher = Dispatcher(bot=bot, storage=MemoryStorage())
 async def on_startup(_):
     register_handlers(dp)
     await db.db_init()
+    locale.init()
 
 
 async def on_shutdown(_):
