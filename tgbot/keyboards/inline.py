@@ -4,7 +4,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from tgbot.misc.locale import get_dialog_message_answer
 
 
-async def generate_cities_keyboard(cities: list[dict], user_language_code: str) -> InlineKeyboardMarkup:
+async def generate_cities_keyboard(cities: list[dict[str, str]], user_language_code: str) -> InlineKeyboardMarkup:
     """
     Generates a keyboard containing buttons with cities and their coordinates
 

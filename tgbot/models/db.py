@@ -1,8 +1,12 @@
 """ Functions for working with the database """
 
 from datetime import datetime
+from os import path
+
 from aiosqlite import connect
-from tgbot.config import DB_NAME
+from tgbot.config import BASE_DIR
+
+DB_NAME: str = path.join(BASE_DIR, 'db.sqlite3')
 
 
 async def db_init() -> None:

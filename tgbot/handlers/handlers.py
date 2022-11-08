@@ -1,5 +1,7 @@
 """ Handling messages from bot users """
 
+from os import remove
+
 from asyncio import sleep
 
 from aiogram import Dispatcher, types
@@ -119,7 +121,8 @@ async def dialog_message_select_city(message: types.Message, state: FSMContext) 
             chat_id=data['user_id'],
             message_id=data['dialog_message_id']
         )
-        cities_found: list = await get_list_cities(city_name=message.text, user_language_code=data['user_language'])
+        cities_found: list[dict[str, str]] = await get_list_cities(city_name=message.text,
+                                                                   user_language_code=data['user_language'])
         if len(cities_found) == 0:
             await message.bot.edit_message_text(
                 text=await get_dialog_message_answer(user_language_code=data['user_language'],
@@ -199,14 +202,16 @@ async def dialog_save_weather_settings(call: CallbackQuery, state: FSMContext) -
             chat_id=call.message.chat.id,
             message_id=call.message.message_id
         )
+        path_to_forecast_image: str = await get_weather_forecast_data(user_id=call.message.chat.id)
         new_dialog_message: Message = await call.bot.send_photo(
             chat_id=call.message.chat.id,
-            photo=await get_weather_forecast_data(user_id=call.message.chat.id),
+            photo=InputFile(path_to_forecast_image),
             caption=await get_current_weather_data(user_id=call.message.chat.id),
             reply_markup=await generate_admin_keyboard(
                 user_language_code=call.from_user.language_code
             ) if call.message.chat.id in ADMINS else None
         )
+        remove(path_to_forecast_image)
         await call.bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
         await save_dialog_message_id(user_id=call.message.chat.id, dialog_message_id=new_dialog_message.message_id)
         data.clear()

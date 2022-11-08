@@ -31,7 +31,7 @@ async def _correct_user_input(string: str) -> str:
     return processed_string
 
 
-async def _format_city_data(city: dict, user_language_code: str) -> dict:
+async def _format_city_data(city: dict, user_language_code: str) -> dict[str, str]:
     """
     Formats the city data
 
@@ -197,8 +197,7 @@ async def get_weather_forecast_data(user_id: int):
                 return await format_weather_forecast_image(
                     weather_data=weather_forecast_data.get('list'),
                     temperature_unit=users_weather_settings.get("temperature_unit"),
-                    city_local_name=users_weather_settings.get("city_local_name"),
-                    user_language_code=users_weather_settings.get("language_code")
+                    user_id=user_id
                 )
             else:
                 error: dict = await responce.json()
@@ -206,7 +205,7 @@ async def get_weather_forecast_data(user_id: int):
                 return BOT_LOGO
 
 
-async def get_list_cities(city_name: str, user_language_code: str) -> list[dict]:
+async def get_list_cities(city_name: str, user_language_code: str) -> list[dict[str, str]]:
     """
     Returns the list of found cities
 
@@ -214,7 +213,7 @@ async def get_list_cities(city_name: str, user_language_code: str) -> list[dict]
     :param user_language_code: user language code
     :return: list of found cities
     """
-    result: list[dict] = []
+    result: list[dict[str, str]] = []
     async with ClientSession() as session:
         async with session.get(url=f'{GEOCODING_API_URL}'
                                    f'?q={await _correct_user_input(string=city_name)}'

@@ -8,15 +8,14 @@ from pathlib import Path
 from environs import Env
 
 BASE_DIR: Path = Path(__file__).resolve().parent
-DB_NAME: str = path.join(BASE_DIR, 'db.sqlite3')
+
 LANGUAGES_DIR: str = path.join(BASE_DIR, 'lang')
-BOT_LOGO: str = path.join(BASE_DIR, 'assets/bot_logo.png')
-OPEN_WEATHER_LOGO: str = path.join(BASE_DIR, 'assets/openweather-logo.png')
-LOG_FILE: str = path.join(BASE_DIR, 'OpenWeatherBot.log')
+BOT_LOGO: str = path.join(BASE_DIR, 'assets/logo/bot_logo.png')
+OPEN_WEATHER_LOGO: str = path.join(BASE_DIR, 'assets/logo/openweather-logo.png')
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
-    # filename=LOG_FILE,
+    # filename=path.join(BASE_DIR, 'OpenWeatherBot.log'),
     level=logging.INFO,
     format='%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s'
 )
