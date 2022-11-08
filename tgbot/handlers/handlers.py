@@ -9,13 +9,14 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery, InputFile
 from aiogram.utils.exceptions import MessageToDeleteNotFound, MessageIdentifierNotSpecified
 
+from tgbot.config import db
+
 from tgbot.config import load_config, OPEN_WEATHER_LOGO
 from tgbot.keyboards.inline import generate_cities_keyboard, generate_temperature_units_keyboard, \
     generate_admin_keyboard
 from tgbot.misc.locale import get_dialog_message_answer
 from tgbot.misc.states import TextInput
-from tgbot.models.db import get_dialog_message_id, save_dialog_message_id, delete_user_from_db, \
-    save_user_weather_settings, get_current_api_counter_value
+
 from tgbot.services.weather_api import get_list_cities, get_weather_forecast_data, get_current_weather_data
 
 ADMINS: tuple[int] = load_config().tg_bot.admin_ids
@@ -52,16 +53,16 @@ async def dialog_command_start(message: Message, state: FSMContext) -> None:
     await message.delete()
     await state.reset_state()
     async with state.proxy() as data:
-        data['user_id']: int = message.from_user.id
-        data['user_language']: str = message.from_user.language_code
+        data['id']: int = message.from_user.id
+        data['lang']: str = message.from_user.language_code
         data['dialog_message_id']: int = await _del_old_dialog_message_and_send_new(
             message=message,
-            old_dialog_message_id=await get_dialog_message_id(user_id=data['user_id']),
-            message_text=await get_dialog_message_answer(user_language_code=data['user_language'],
+            old_dialog_message_id=await db.get_dialog_message_id(user_id=data['id']),
+            message_text=await get_dialog_message_answer(user_language_code=data['lang'],
                                                          dialog_message_name='dialog_command_start')
         )
     await TextInput.EnterCityName.set()  # Allow user input of text
-    await save_dialog_message_id(user_id=data['user_id'], dialog_message_id=data['dialog_message_id'])
+    await db.save_dialog_message_id(user_id=data['id'], dialog_message_id=data['dialog_message_id'])
 
 
 async def dialog_command_about(message: Message) -> None:
@@ -95,10 +96,10 @@ async def dialog_command_stop(message: Message, state: FSMContext) -> None:
         data.clear()
     dialog_message_id: int = await _del_old_dialog_message_and_send_new(
         message=message,
-        old_dialog_message_id=await get_dialog_message_id(user_id=message.from_user.id),
+        old_dialog_message_id=await db.get_dialog_message_id(user_id=message.from_user.id),
         message_text=await get_dialog_message_answer(user_language_code=message.from_user.language_code,
                                                      dialog_message_name='dialog_command_stop'))
-    await delete_user_from_db(user_id=message.from_user.id)
+    await db.delete_user(user_id=message.from_user.id)
     await sleep(5)
     await message.bot.delete_message(chat_id=message.from_user.id, message_id=dialog_message_id)
 
@@ -116,29 +117,29 @@ async def dialog_message_select_city(message: types.Message, state: FSMContext) 
     #                             takes a long time to process the request)
     async with state.proxy() as data:
         await message.bot.edit_message_text(
-            text=await get_dialog_message_answer(user_language_code=data['user_language'],
+            text=await get_dialog_message_answer(user_language_code=data['lang'],
                                                  dialog_message_name='dialog_message_select_city'),
-            chat_id=data['user_id'],
+            chat_id=data['id'],
             message_id=data['dialog_message_id']
         )
         cities_found: list[dict[str, str]] = await get_list_cities(city_name=message.text,
-                                                                   user_language_code=data['user_language'])
+                                                                   user_language_code=data['lang'])
         if len(cities_found) == 0:
             await message.bot.edit_message_text(
-                text=await get_dialog_message_answer(user_language_code=data['user_language'],
+                text=await get_dialog_message_answer(user_language_code=data['lang'],
                                                      dialog_message_name='dialog_message_select_city_error'),
-                chat_id=data['user_id'],
+                chat_id=data['id'],
                 message_id=data['dialog_message_id']
             )
             await TextInput.EnterCityName.set()  # Allow user input of text
         else:
             await message.bot.edit_message_text(
-                text=await get_dialog_message_answer(user_language_code=data['user_language'],
+                text=await get_dialog_message_answer(user_language_code=data['lang'],
                                                      dialog_message_name='dialog_message_select_city_success'),
-                chat_id=data['user_id'],
+                chat_id=data['id'],
                 message_id=data['dialog_message_id'],
                 reply_markup=await generate_cities_keyboard(cities=cities_found,
-                                                            user_language_code=data['user_language'])
+                                                            user_language_code=data['lang'])
             )
 
 
@@ -170,7 +171,8 @@ async def dialog_choice_of_temperature_units(call: CallbackQuery, state: FSMCont
     await call.answer(cache_time=1)
     async with state.proxy() as data:
         city_data: str = call.data.removeprefix('city_coords_and_name=')
-        data['city_latitude'], data['city_longitude'], data['city_local_name'] = city_data.split('&')
+        latitude, longitude, city = city_data.split('&')
+        data['latitude'], data['longitude'], data['city'] = float(latitude), float(longitude), city
         await call.bot.edit_message_text(
             text=await get_dialog_message_answer(user_language_code=call.from_user.language_code,
                                                  dialog_message_name='dialog_choice_of_temperature_units'),
@@ -194,8 +196,8 @@ async def dialog_save_weather_settings(call: CallbackQuery, state: FSMContext) -
                       cache_time=1)
 
     async with state.proxy() as data:
-        data['temperature_units']: str = 'metric' if call.data.removeprefix('temperature_units=') == 'c' else 'imperial'
-        await save_user_weather_settings(data=data.as_dict())
+        data['units']: str = 'metric' if call.data.removeprefix('temperature_units=') == 'c' else 'imperial'
+        await db.save_user_settings(settings=data.as_dict())
         await call.bot.edit_message_text(
             text=await get_dialog_message_answer(user_language_code=call.from_user.language_code,
                                                  dialog_message_name='dialog_loading_weather_data'),
@@ -213,7 +215,7 @@ async def dialog_save_weather_settings(call: CallbackQuery, state: FSMContext) -
         )
         remove(path_to_forecast_image)
         await call.bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
-        await save_dialog_message_id(user_id=call.message.chat.id, dialog_message_id=new_dialog_message.message_id)
+        await db.save_dialog_message_id(user_id=call.message.chat.id, dialog_message_id=new_dialog_message.message_id)
         data.clear()
 
 
@@ -224,7 +226,7 @@ async def dialog_admin_statistics(call: CallbackQuery) -> None:
     :param call: CallbackQuery
     :return: None
     """
-    request_counter: int = await get_current_api_counter_value()
+    request_counter: int = await db.get_api_counter_value()
     dialog_admin_statistics_message: str = await get_dialog_message_answer(
         user_language_code=call.from_user.language_code,
         dialog_message_name='dialog_admin_statistics'
@@ -253,6 +255,7 @@ def register_handlers(dp: Dispatcher) -> None:
     :param dp: Dispatcher
     :return: None
     """
+    pass
     dp.register_message_handler(dialog_command_start, commands='start', state='*')
     dp.register_message_handler(dialog_command_about, commands='about', state='*')
     dp.register_message_handler(dialog_command_stop, commands='stop', state='*')

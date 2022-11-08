@@ -3,9 +3,10 @@
 from aiohttp import ClientSession
 from datetime import datetime
 
-from tgbot.config import logger, load_config, BOT_LOGO
+from tgbot.config import logger, load_config, BOT_LOGO, db
 from tgbot.misc.locale import get_dialog_message_answer
-from tgbot.models.db import get_user_weather_settings, increase_api_counter
+from tgbot.models.database import UserWeatherSettings
+
 from tgbot.services.generate_weather_forecast_image import format_weather_forecast_image
 
 API_KEY: str = load_config().weather_api.token
@@ -151,27 +152,27 @@ async def get_current_weather_data(user_id: int) -> str:
     :param user_id: user id
     :return: formatted current weather data
     """
-    users_weather_settings: dict = await get_user_weather_settings(user_id=user_id)
+    settings: UserWeatherSettings = await db.get_user_settings(user_id=user_id)
     async with ClientSession() as session:
         async with session.get(url=f'{CURRENT_WEATHER_API_URL}'
-                                   f'?lat={users_weather_settings.get("city_latitude")}'
-                                   f'&lon={users_weather_settings.get("city_longitude")}'
-                                   f'&lang={users_weather_settings.get("language_code")}'
-                                   f'&units={users_weather_settings.get("temperature_unit")}'
+                                   f'?lat={settings.latitude}'
+                                   f'&lon={settings.longitude}'
+                                   f'&lang={settings.lang}'
+                                   f'&units={settings.units}'
                                    f'&appid={API_KEY}') as responce:
-            await increase_api_counter()
+            await db.increase_api_counter()
             if responce.status == 200:
                 current_weather_data: dict = await responce.json()
                 return await _format_current_weather_data(
                     weather_data=current_weather_data,
-                    temperature_unit=users_weather_settings.get("temperature_unit"),
-                    city_local_name=users_weather_settings.get("city_local_name"),
-                    user_language_code=users_weather_settings.get("language_code")
+                    temperature_unit=settings.units,
+                    city_local_name=settings.city,
+                    user_language_code=settings.lang
                 )
             else:
                 error: dict = await responce.json()
                 logger.error('Error when requesting CurrentWeatherAPI: %s', error.get('message'))
-                return await get_dialog_message_answer(user_language_code=users_weather_settings.get("language_code"),
+                return await get_dialog_message_answer(user_language_code=settings.lang,
                                                        dialog_message_name='error_weather_data')
 
 
@@ -182,21 +183,21 @@ async def get_weather_forecast_data(user_id: int):
     :param user_id: user id
     :return:
     """
-    users_weather_settings: dict = await get_user_weather_settings(user_id=user_id)
+    settings: UserWeatherSettings = await db.get_user_settings(user_id=user_id)
     async with ClientSession() as session:
         async with session.get(url=f'{WEATHER_FORECAST_API_URL}'
-                                   f'?lat={users_weather_settings.get("city_latitude")}'
-                                   f'&lon={users_weather_settings.get("city_longitude")}'
-                                   f'&lang={users_weather_settings.get("language_code")}'
-                                   f'&units={users_weather_settings.get("temperature_unit")}'
+                                   f'?lat={settings.latitude}'
+                                   f'&lon={settings.longitude}'
+                                   f'&lang={settings.lang}'
+                                   f'&units={settings.units}'
                                    f'&cnt=8'
                                    f'&appid={API_KEY}') as responce:
-            await increase_api_counter()
+            await db.increase_api_counter()
             if responce.status == 200:
                 weather_forecast_data: dict = await responce.json()
                 return await format_weather_forecast_image(
                     weather_data=weather_forecast_data.get('list'),
-                    temperature_unit=users_weather_settings.get("temperature_unit"),
+                    temperature_unit=settings.units,
                     user_id=user_id
                 )
             else:
@@ -219,7 +220,7 @@ async def get_list_cities(city_name: str, user_language_code: str) -> list[dict[
                                    f'?q={await _correct_user_input(string=city_name)}'
                                    f'&limit=5'
                                    f'&appid={API_KEY}') as responce:
-            await increase_api_counter()
+            await db.increase_api_counter()
             if responce.status == 200:
                 list_cities: list[dict] = await responce.json()
                 if len(list_cities) != 0:

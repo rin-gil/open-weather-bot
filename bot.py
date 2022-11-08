@@ -1,22 +1,18 @@
-import asyncio
-
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.utils import executor
 
-from tgbot.config import load_config, logger
+from tgbot.config import load_config, logger, db
 from tgbot.handlers.handlers import register_handlers
-from tgbot.models.db import db_init
 
 
-bot = Bot(token=load_config().tg_bot.token, parse_mode='HTML')
-dp = Dispatcher(bot, storage=MemoryStorage())
+bot: Bot = Bot(token=load_config().tg_bot.token, parse_mode='HTML')
+dp: Dispatcher = Dispatcher(bot=bot, storage=MemoryStorage())
 
 
 async def on_startup(_):
-    await db_init()
     register_handlers(dp)
-    # TODO сделать запуск проверки погоды по расписанию
+    await db.db_init()
 
 
 async def on_shutdown(_):

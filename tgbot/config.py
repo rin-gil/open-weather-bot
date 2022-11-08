@@ -3,15 +3,24 @@
 import logging
 
 from dataclasses import dataclass
-from os import path
+from os.path import join
 from pathlib import Path
 from environs import Env
 
+from tgbot.models.database import Database
+
 BASE_DIR: Path = Path(__file__).resolve().parent
 
-LANGUAGES_DIR: str = path.join(BASE_DIR, 'lang')
-BOT_LOGO: str = path.join(BASE_DIR, 'assets/logo/bot_logo.png')
-OPEN_WEATHER_LOGO: str = path.join(BASE_DIR, 'assets/logo/openweather-logo.png')
+LANGUAGES_DIR: str = join(BASE_DIR, 'lang')
+BOT_LOGO: str = join(BASE_DIR, 'assets/logo/bot_logo.png')
+OPEN_WEATHER_LOGO: str = join(BASE_DIR, 'assets/logo/openweather-logo.png')
+
+
+_DB_NAME: str = join(BASE_DIR, 'db.sqlite3')
+
+
+
+db: Database = Database(path=_DB_NAME)
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
