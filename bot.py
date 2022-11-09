@@ -1,41 +1,54 @@
+""" Launches the bot """
+
+import asyncio
+
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.utils import executor
 
 from tgbot.config import load_config
-from tgbot.handlers.handlers import register_handlers
+from tgbot.filters.admin import AdminFilter
+from tgbot.handlers.admin import register_admin
+from tgbot.handlers.user import register_user
 from tgbot.misc.loging import logger
 from tgbot.models.database import database
 from tgbot.models.localization import locale
 
-bot: Bot = Bot(token=load_config().tg_bot.token, parse_mode='HTML')
-dp: Dispatcher = Dispatcher(bot=bot, storage=MemoryStorage())
+
+def register_all_filters(dp):
+    dp.filters_factory.bind(AdminFilter)
 
 
-async def on_startup(_):
-    register_handlers(dp)
-    await database.init()
-    locale.init()
+def register_all_handlers(dp):
+    register_admin(dp)
+    register_user(dp)
 
 
-async def on_shutdown(_):
-    await dp.storage.close()
-    await dp.storage.wait_closed()
-    await bot.session.close()
-
-
-def main() -> None:
-    """
-    Launches the bot
-
-    :return: None
-    """
+async def main() -> None:
+    """ Launches the bot """
     logger.info('Starting bot')
-    executor.start_polling(dispatcher=dp, on_startup=on_startup, on_shutdown=on_shutdown, skip_updates=True)
+
+    config = load_config()
+    bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
+    dp = Dispatcher(bot, storage=MemoryStorage())
+    bot['config'] = config
+
+    register_all_filters(dp)
+    register_all_handlers(dp)
+
+    try:
+        locale.init()
+        await database.init()
+        await dp.skip_updates()
+        await dp.start_polling()
+    finally:
+        await dp.storage.close()
+        await dp.storage.wait_closed()
+        session = await bot.get_session()
+        await session.close()
 
 
 if __name__ == '__main__':
     try:
-        main()
+        asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
         logger.info('Bot stopped!')

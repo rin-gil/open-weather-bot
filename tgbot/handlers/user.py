@@ -9,16 +9,13 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, InputFile, Message
 from aiogram.utils.exceptions import MessageIdentifierNotSpecified, MessageToDeleteNotFound
 
-from tgbot.config import load_config, BOT_LOGO
-from tgbot.keyboards.inline import gen_admin_kb, gen_cities_kb, gen_units_kb
+from tgbot.config import BOT_LOGO
+from tgbot.keyboards.inline import gen_cities_kb, gen_units_kb
 from tgbot.misc.states import UserInput
 from tgbot.models.database import database
 from tgbot.models.localization import locale
 from tgbot.services.weather_api import weather
-
 from tgbot.services.weather_formatter import CityData
-
-_ADMINS: tuple[int] = load_config().tg_bot.admin_ids
 
 
 async def _del_old_dialog_message_and_send_new(message: Message, old_dialog_message_id: int, message_text: str) -> int:
@@ -135,7 +132,7 @@ async def select_city(message: types.Message, state: FSMContext) -> None:
             )
 
 
-async def back_to_input_city_name(call: CallbackQuery) -> None:
+async def another_city(call: CallbackQuery) -> None:
     """
     Returns to the input of the city name
 
@@ -196,30 +193,13 @@ async def save_settings(call: CallbackQuery, state: FSMContext) -> None:
         new_dialog_message: Message = await call.bot.send_photo(
             chat_id=call.message.chat.id,
             photo=InputFile(path_to_forecast_image),
-            caption=await weather.get_current_weather(user_id=call.message.chat.id),
-            reply_markup=await gen_admin_kb(lang=call.from_user.language_code) if call.message.chat.id in _ADMINS else None
+            caption=await weather.get_current_weather(user_id=call.message.chat.id)
         )
         remove(path_to_forecast_image)
         await call.bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
-        await database.save_dialog_message_id(user_id=call.message.chat.id, dialog_message_id=new_dialog_message.message_id)
+        await database.save_dialog_message_id(user_id=call.message.chat.id,
+                                              dialog_message_id=new_dialog_message.message_id)
         data.clear()
-
-
-async def admin_statistics(call: CallbackQuery) -> None:
-    """
-    Displays information about the number of requests made to OpenWeatherMap API since the beginning of the month
-
-    :param call: CallbackQuery
-    :return: None
-    """
-    request_counter: int = await database.get_api_counter_value()
-    dialog_admin_statistics_message: str = await locale.get_translate(lang=call.from_user.language_code,
-                                                                      translate='admin_statistics')
-    phrases: list = dialog_admin_statistics_message.split('---')
-    text = f'\u2139 {phrases[0]}\n' \
-           f'{round((request_counter / 1000000) * 100)}% {phrases[1]}\n' \
-           f'{"{0:,}".format(request_counter).replace(",", " ")} {phrases[2]} 1 000 000'
-    await call.answer(text=text, show_alert=True, cache_time=1)
 
 
 async def unprocessed(message: Message) -> None:
@@ -232,20 +212,18 @@ async def unprocessed(message: Message) -> None:
     await message.delete()
 
 
-def register_handlers(dp: Dispatcher) -> None:
+def register_user(dp: Dispatcher) -> None:
     """
     Registers the handling of commands from the user in the Dispatcher.
 
     :param dp: Dispatcher
     :return: None
     """
-    pass
     dp.register_message_handler(start, commands='start', state='*')
     dp.register_message_handler(about, commands='about', state='*')
     dp.register_message_handler(stop, commands='stop', state='*')
     dp.register_message_handler(select_city, state=UserInput.Allow)
-    dp.register_callback_query_handler(back_to_input_city_name, text='another_city')
+    dp.register_callback_query_handler(another_city, text='another_city')
     dp.register_callback_query_handler(choice_units, text_contains='city_data=')
     dp.register_callback_query_handler(save_settings, text_contains='units=')
-    dp.register_callback_query_handler(admin_statistics, text='admin')
     dp.register_message_handler(unprocessed, state='*', content_types=types.ContentTypes.ANY)

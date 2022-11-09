@@ -9,8 +9,7 @@
   "loading_data": "\u23F3 Downloading weather data...",
   "save_settings": "\uD83C\uDF26 The weather setup is complete!\n\nThe data will be updated automatically every 3 hours.",
 
-  "admin_keyboard": "Statistics",
-  "admin_statistics": "Since beginning of the month---requests have been spent---out of",
+  "statistics": "Since beginning of the month---requests have been spent---out of",
 
   "error_weather": "\u274C Error when receiving weather data!",
 
