@@ -160,7 +160,7 @@ class WeatherForecastImage:
             text = wind_speed[_]
             offset: int = round((100 - draw.textlength(text=text, font=font)) / 2)
             draw.text(xy=(cursor.x + offset, cursor.y), text=text, font=font, fill='#000000')
-
+            # shift to the next column
             cursor.x += 101
 
         path_to_image: str = path.join(self._IMAGES_DIR, f'{user_id}.png')
