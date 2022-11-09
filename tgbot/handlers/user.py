@@ -68,12 +68,13 @@ async def about(message: Message) -> None:
     :return: None
     """
     await message.delete()
-    about_message = await message.bot.send_photo(
-        chat_id=message.from_user.id,
-        photo=InputFile(BOT_LOGO),
-        caption='Weather data provided by <a href="https://openweathermap.org/">OpenWeather</a>'
-    )
-    await sleep(10)
+    text: str = '🤖 <b>OpenWeatherBot</b> is written in <b>Python</b> using the <b>AIOgram</b> library.\n\n' \
+                'Weather data provided by <a href="https://openweathermap.org/">OpenWeather</a>\n' \
+                'Icon by <a href="https://freeicons.io/profile/2257">www.wishforge.games</a> on ' \
+                '<a href="https://freeicons.io">freeicons.io</a>\n' \
+                'The source code is available on <a href="https://github.com/rin-gil/OpenWeatherBot">GitHub</a>'
+    about_message = await message.bot.send_photo(chat_id=message.from_user.id, photo=InputFile(BOT_LOGO), caption=text)
+    await sleep(15)
     await message.bot.delete_message(chat_id=message.from_user.id, message_id=about_message.message_id)
 
 
