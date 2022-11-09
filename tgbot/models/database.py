@@ -1,9 +1,13 @@
 """ Model describing the work with the database """
 
 from datetime import datetime
+from os.path import join
 from typing import NamedTuple
 
 from aiosqlite import connect
+
+from tgbot.config import BASE_DIR
+from tgbot.misc.loging import logger
 
 
 class UserWeatherSettings(NamedTuple):
@@ -21,7 +25,7 @@ class Database:
     """ A class for working with the database """
     def __init__(self, path: str) -> None:
         """
-        declares the path to the database file
+        Defines the path to the database file
 
         :param path: path to the database file
         """
@@ -29,28 +33,33 @@ class Database:
 
     async def init(self) -> None:
         """ Creates a database file and a table in it """
-        async with connect(database=self._db_path) as db:
-            await db.execute(
-                """
-                CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY ON CONFLICT IGNORE,
-                    dialog_message_id INTEGER NOT NULL,
-                    lang VARCHAR(2) DEFAULT NULL,
-                    city VARCHAR(72) DEFAULT NULL,
-                    latitude REAL DEFAULT NULL,
-                    longitude REAL DEFAULT NULL,
-                    units VARCHAR(8) DEFAULT NULL
-                );
-                """
-            )
-            await db.execute(
-                """
-                CREATE TABLE IF NOT EXISTS api_request_counters (
-                        month VARCHAR(7) PRIMARY KEY,
-                        counter INTEGER NOT NULL DEFAULT 0
-                        );
-                """
-            )
+        try:
+            async with connect(database=self._db_path) as db:
+                await db.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS users (
+                        id INTEGER PRIMARY KEY ON CONFLICT IGNORE,
+                        dialog_message_id INTEGER NOT NULL,
+                        lang VARCHAR(2) DEFAULT NULL,
+                        city VARCHAR(72) DEFAULT NULL,
+                        latitude REAL DEFAULT NULL,
+                        longitude REAL DEFAULT NULL,
+                        units VARCHAR(8) DEFAULT NULL
+                    );
+                    """
+                )
+                await db.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS api_request_counters (
+                            month VARCHAR(7) PRIMARY KEY,
+                            counter INTEGER NOT NULL DEFAULT 0
+                            );
+                    """
+                )
+        except Exception as ex:
+            logger.critical('Database connection error: %s', ex)
+            logger.info('Bot stopped!')
+            exit()
 
     async def get_dialog_message_id(self, user_id: int) -> int:
         """
@@ -173,3 +182,6 @@ class Database:
             ) as cursor:
                 async for row in cursor:
                     return row[0]
+
+
+database: Database = Database(path=join(BASE_DIR, 'db.sqlite3'))

@@ -2,9 +2,11 @@ from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.utils import executor
 
-from tgbot.config import db, load_config, locale, logger
+from tgbot.config import load_config
 from tgbot.handlers.handlers import register_handlers
-
+from tgbot.misc.loging import logger
+from tgbot.models.database import database
+from tgbot.models.localization import locale
 
 bot: Bot = Bot(token=load_config().tg_bot.token, parse_mode='HTML')
 dp: Dispatcher = Dispatcher(bot=bot, storage=MemoryStorage())
@@ -12,7 +14,7 @@ dp: Dispatcher = Dispatcher(bot=bot, storage=MemoryStorage())
 
 async def on_startup(_):
     register_handlers(dp)
-    await db.init()
+    await database.init()
     locale.init()
 
 

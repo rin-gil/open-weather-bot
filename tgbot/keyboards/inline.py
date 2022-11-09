@@ -2,10 +2,11 @@
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from tgbot.config import locale
+from tgbot.models.localization import locale
+from tgbot.services.weather_formatter import CityData
 
 
-async def gen_cities_kb(cities: list[dict[str, str]], lang: str) -> InlineKeyboardMarkup:
+async def gen_cities_kb(cities: list[CityData], lang: str) -> InlineKeyboardMarkup:
     """
     Creates a keyboard containing buttons with cities and their coordinates
 
@@ -16,11 +17,11 @@ async def gen_cities_kb(cities: list[dict[str, str]], lang: str) -> InlineKeyboa
     keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(row_width=1)
     for city in cities:
         keyboard.insert(InlineKeyboardButton(
-            text=city.get('city_full_name'),
-            callback_data=f'city_data={city.get("lat")}&{city.get("lon")}&{city.get("city_local_name")}')
+            text=city.full_name,
+            callback_data=f'city_data={city.latitude}&{city.longitude}&{city.name}')
         )
     keyboard.insert(InlineKeyboardButton(
-        text=await locale.get_translate(lang=lang, translation='another_city'),
+        text=await locale.get_translate(lang=lang, translate='another_city'),
         callback_data=f'another_city')
     )
     return keyboard
@@ -46,7 +47,7 @@ async def gen_admin_kb(lang: str) -> InlineKeyboardMarkup:
     """
     keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(row_width=1)
     keyboard.insert(InlineKeyboardButton(
-        text=await locale.get_translate(lang=lang, translation='admin_keyboard'),
+        text=await locale.get_translate(lang=lang, translate='admin_keyboard'),
         callback_data='admin')
     )
     return keyboard
