@@ -29,14 +29,14 @@ async def delete_reply_message(message: Message, reply_id: int) -> None:
     """
     try:
         await message.delete()
-    except MessageToDeleteNotFound as ex:
-        logger.debug(ex)
+    except MessageToDeleteNotFound:
+        pass
     try:
         await message.bot.delete_message(chat_id=message.from_user.id, message_id=reply_id)
-    except MessageToDeleteNotFound as ex:
-        logger.debug(ex)
-    except MessageIdentifierNotSpecified as ex:
-        logger.debug(ex)
+    except MessageToDeleteNotFound:
+        pass
+    except MessageIdentifierNotSpecified:
+        pass
 
 
 async def delete_reply_call(call: CallbackQuery, reply_id: int) -> None:

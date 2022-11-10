@@ -1,7 +1,6 @@
 """ Launches the bot """
 
-import asyncio
-
+from asyncio import create_task, run
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
@@ -11,6 +10,7 @@ from tgbot.handlers.admin import register_admin
 from tgbot.handlers.user import register_user
 from tgbot.misc.commands import set_default_commands
 from tgbot.misc.logging import logger
+from tgbot.misc.sheduler import schedule
 from tgbot.models.database import database
 from tgbot.models.localization import locale
 
@@ -40,6 +40,7 @@ async def main() -> None:
         locale.init()
         await database.init()
         await set_default_commands(dp)
+        create_task(schedule(dp))
         await dp.skip_updates()
         await dp.start_polling()
     finally:
@@ -51,6 +52,6 @@ async def main() -> None:
 
 if __name__ == '__main__':
     try:
-        asyncio.run(main())
+        run(main())
     except (KeyboardInterrupt, SystemExit):
         logger.info('Bot stopped!')

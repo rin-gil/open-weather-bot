@@ -12,13 +12,17 @@ from tgbot.misc.logging import logger
 
 class UserWeatherSettings(NamedTuple):
     """ A class that describes the user's weather settings """
-    id: int
-    dialog_message_id: int
     lang: str
     city: str
     latitude: float
     longitude: float
     units: str
+
+
+class Users(NamedTuple):
+    """ A class that describes a user """
+    id: int
+    dialog_message_id: int
 
 
 class Database:
@@ -52,9 +56,9 @@ class Database:
                 await db.execute(
                     """
                     CREATE TABLE IF NOT EXISTS api_request_counters (
-                            month VARCHAR(7) PRIMARY KEY,
-                            counter INTEGER NOT NULL DEFAULT 0
-                            );
+                        month VARCHAR(7) PRIMARY KEY,
+                        counter INTEGER NOT NULL DEFAULT 0
+                    );
                     """
                 )
         except Exception as ex:
@@ -101,16 +105,16 @@ class Database:
         :return: user weather settings
         """
         async with connect(database=self._db_path) as db:
-            async with db.execute("""SELECT * FROM users WHERE id=?""", (user_id,)) as cursor:
+            async with db.execute(
+                    """SELECT lang, city, latitude, longitude, units FROM users WHERE id=?;""", (user_id,)
+            ) as cursor:
                 async for row in cursor:
                     return UserWeatherSettings(
-                        id=row[0],
-                        dialog_message_id=row[1],
-                        lang=row[2],
-                        city=row[3],
-                        latitude=row[4],
-                        longitude=row[5],
-                        units=row[6]
+                        lang=row[0],
+                        city=row[1],
+                        latitude=row[2],
+                        longitude=row[3],
+                        units=row[4]
                     )
 
     async def save_user_settings(self, settings: dict) -> None:
@@ -143,27 +147,17 @@ class Database:
             )
             await db.commit()
 
-    async def get_all_users(self) -> list[UserWeatherSettings]:
+    async def get_all_users(self) -> list[Users]:
         """
         Returns the settings of all users
 
         :return: users weather settings
         """
-        users: list[UserWeatherSettings] = []
+        users: list[Users] = []
         async with connect(database=self._db_path) as db:
-            async with db.execute("""SELECT * FROM users""") as cursor:
+            async with db.execute("""SELECT id, dialog_message_id FROM users WHERE city NOT NULL;""") as cursor:
                 async for row in cursor:
-                    users.append(
-                        UserWeatherSettings(
-                            id=row[0],
-                            dialog_message_id=row[1],
-                            lang=row[2],
-                            city=row[3],
-                            latitude=row[4],
-                            longitude=row[5],
-                            units=row[6]
-                        )
-                    )
+                    users.append(Users(id=row[0], dialog_message_id=row[1]))
         return users
 
     async def get_users_counter(self) -> int:
@@ -173,7 +167,7 @@ class Database:
         :return: count of users
         """
         async with connect(database=self._db_path) as db:
-            async with db.execute("""SELECT COUNT() FROM users""") as cursor:
+            async with db.execute("""SELECT COUNT() FROM users;""") as cursor:
                 async for row in cursor:
                     return row[0]
 
