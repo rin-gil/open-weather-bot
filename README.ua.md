@@ -43,7 +43,7 @@ pip install -r requirements.txt
 mv .env.dist .env
 ```
 
-<img align="right" width="200" src="https://raw.githubusercontent.com/rin-gil/rin-gil/main/assets/img/projects/OpenWeatherBot/screenshot_ua.png" alt="Головний екран OpenWeatherBot">
+<img align="right" width="300" src="https://raw.githubusercontent.com/rin-gil/rin-gil/main/assets/img/projects/OpenWeatherBot/screenshot_ua.png" alt="Головний екран OpenWeatherBot">
 
 ### Налаштування та запуск
 
