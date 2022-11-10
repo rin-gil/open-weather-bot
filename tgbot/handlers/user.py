@@ -4,9 +4,9 @@ from os import remove
 
 from asyncio import sleep
 
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery, InputFile, Message
+from aiogram.types import CallbackQuery, ContentTypes, InputFile, Message
 from aiogram.utils.exceptions import MessageIdentifierNotSpecified, MessageToDeleteNotFound
 
 from tgbot.config import BOT_LOGO
@@ -72,8 +72,7 @@ async def start(message: Message, state: FSMContext) -> None:
                                            caption=await locale.get_translate(lang=data['lang'], translate='start'),
                                            disable_notification=True)
         data['dialog_message_id']: int = reply.message_id
-    # Allow user input
-    await UserInput.Allow.set()
+    await UserInput.Allow.set()  # Allow user input
     await database.save_dialog_message_id(user_id=data['id'], dialog_message_id=data['dialog_message_id'])
 
 
@@ -116,7 +115,7 @@ async def stop(message: Message, state: FSMContext) -> None:
     await message.bot.delete_message(chat_id=message.from_user.id, message_id=reply.message_id)
 
 
-async def select_city(message: types.Message, state: FSMContext) -> None:
+async def select_city(message: Message, state: FSMContext) -> None:
     """
     Processing the result of the search of the city entered by the user
 
@@ -124,8 +123,7 @@ async def select_city(message: types.Message, state: FSMContext) -> None:
     :param state: state from Final State Machine
     :return: None
     """
-    # Prevent user input (prevents repeated city search if the API service takes a long time to process the request)
-    await UserInput.previous()
+    await UserInput.previous()  # Prevent user input
     async with state.proxy() as data:
         await delete_reply_message(message=message, reply_id=data['dialog_message_id'])
         reply = await message.answer_photo(
@@ -134,7 +132,12 @@ async def select_city(message: types.Message, state: FSMContext) -> None:
             disable_notification=True
         )
         data['dialog_message_id'] = reply.message_id
-        cities_found: list[CityData] = await weather.get_cities(city_name=message.text, lang=data['lang'])
+        if message.content_type == 'location' or message.content_type == 'venue':
+            cities_found: list[CityData] = await weather.get_cities(lang=data['lang'],
+                                                                    latitude=message.location.latitude,
+                                                                    longitude=message.location.longitude)
+        else:
+            cities_found: list[CityData] = await weather.get_cities(lang=data['lang'], city_name=message.text)
         if len(cities_found) == 0:
             await delete_reply_message(message=message, reply_id=data['dialog_message_id'])
             reply = await message.answer_photo(
@@ -142,8 +145,6 @@ async def select_city(message: types.Message, state: FSMContext) -> None:
                 caption=await locale.get_translate(lang=data['lang'], translate='select_city_error'),
                 disable_notification=True
             )
-            # Allow user input
-            await UserInput.Allow.set()
         else:
             await delete_reply_message(message=message, reply_id=data['dialog_message_id'])
             reply = await message.answer_photo(
@@ -152,7 +153,9 @@ async def select_city(message: types.Message, state: FSMContext) -> None:
                 disable_notification=True,
                 reply_markup=await gen_cities_kb(cities=cities_found, lang=data['lang'])
             )
+        await UserInput.Allow.set()  # Allow user input
         data['dialog_message_id'] = reply.message_id
+        await database.save_dialog_message_id(user_id=data['id'], dialog_message_id=data['dialog_message_id'])
 
 
 async def another_city(call: CallbackQuery, state: FSMContext) -> None:
@@ -173,8 +176,7 @@ async def another_city(call: CallbackQuery, state: FSMContext) -> None:
             disable_notification=True,
         )
         data['dialog_message_id'] = reply.message_id
-    # Allow user input
-    await UserInput.Allow.set()
+        await database.save_dialog_message_id(user_id=data['id'], dialog_message_id=data['dialog_message_id'])
 
 
 async def choice_units(call: CallbackQuery, state: FSMContext) -> None:
@@ -185,6 +187,7 @@ async def choice_units(call: CallbackQuery, state: FSMContext) -> None:
     :param state: state from Final State Machine
     :return: None
     """
+    await UserInput.previous()  # Prevent user input
     await call.answer(cache_time=1)
     async with state.proxy() as data:
         await delete_reply_call(call=call, reply_id=data['dialog_message_id'])
@@ -195,9 +198,10 @@ async def choice_units(call: CallbackQuery, state: FSMContext) -> None:
             disable_notification=True,
             reply_markup=await gen_units_kb()
         )
-        data['dialog_message_id'] = reply.message_id
         latitude, longitude, city = call.data.removeprefix('city_data=').split('&')
         data['latitude'], data['longitude'], data['city'] = float(latitude), float(longitude), city
+        data['dialog_message_id'] = reply.message_id
+        await database.save_dialog_message_id(user_id=data['id'], dialog_message_id=data['dialog_message_id'])
 
 
 async def save_settings(call: CallbackQuery, state: FSMContext) -> None:
@@ -226,9 +230,9 @@ async def save_settings(call: CallbackQuery, state: FSMContext) -> None:
             caption=await weather.get_current_weather(user_id=data['id']),
             disable_notification=True
         )
-        data['dialog_message_id'] = reply.message_id
         remove(image_path)
         await delete_reply_call(call=call, reply_id=reply_id)
+        data['dialog_message_id'] = reply.message_id
         await database.save_dialog_message_id(user_id=data['id'], dialog_message_id=data['dialog_message_id'])
         text = await locale.get_translate(lang=data['lang'], translate='save_settings')
         reply = await call.bot.send_message(chat_id=data['id'], text=f'<code>{text}</code>', disable_notification=True)
@@ -257,8 +261,8 @@ def register_user(dp: Dispatcher) -> None:
     dp.register_message_handler(start, commands='start', state='*')
     dp.register_message_handler(about, commands='about', state='*')
     dp.register_message_handler(stop, commands='stop', state='*')
-    dp.register_message_handler(select_city, state=UserInput.Allow)
-    dp.register_callback_query_handler(another_city, text='another_city')
-    dp.register_callback_query_handler(choice_units, text_contains='city_data=')
-    dp.register_callback_query_handler(save_settings, text_contains='units=')
-    dp.register_message_handler(unprocessed, state='*', content_types=types.ContentTypes.ANY)
+    dp.register_message_handler(select_city, content_types=['text', 'location', 'venue'], state=UserInput.Allow)
+    dp.register_callback_query_handler(another_city, text='another_city', state='*')
+    dp.register_callback_query_handler(choice_units, text_contains='city_data=', state='*')
+    dp.register_callback_query_handler(save_settings, text_contains='units=', state='*')
+    dp.register_message_handler(unprocessed, state='*', content_types=ContentTypes.ANY)

@@ -11,7 +11,7 @@ from tgbot.services.weather_formatter import CityData, formatter
 
 class WeatherAPI:
     """ A class for working with the OpenWeatherMap API """
-    _GEOCODING_API_URL: str = 'https://api.openweathermap.org/geo/1.0/direct'
+    _GEOCODING_API_URL: str = 'https://api.openweathermap.org/geo/1.0'
     _CURRENT_WEATHER_API_URL: str = 'https://api.openweathermap.org/data/2.5/weather'
     _WEATHER_FORECAST_API_URL: str = 'https://api.openweathermap.org/data/2.5/forecast'
 
@@ -39,20 +39,31 @@ class WeatherAPI:
                 processed_string += char
         return processed_string
 
-    async def get_cities(self, city_name: str, lang: str) -> list[CityData]:
+    async def get_cities(self,
+                         lang: str,
+                         city_name: [str | None] = None,
+                         latitude: [float | None] = None,
+                         longitude: [float | None] = None, ) -> list[CityData]:
         """
         Returns the list of found cities
 
-        :param city_name: city name
         :param lang: user language code
+        :param city_name: city name
+        :param latitude: city latitude
+        :param longitude: city longitude
         :return: list of found cities
         """
         result: list[CityData] = []
+        if city_name is None:
+            api_url: str = f'{self._GEOCODING_API_URL}/reverse' \
+                           f'?lat={latitude}&lon={longitude}' \
+                           f'&limit=5&appid={self._API_KEY}'
+        else:
+            api_url: str = f'{self._GEOCODING_API_URL}/direct' \
+                           f'?q={await self._correct_user_input(string=city_name)}' \
+                           f'&limit=5&appid={self._API_KEY}'
         async with ClientSession() as session:
-            async with session.get(url=f'{self._GEOCODING_API_URL}'
-                                       f'?q={await self._correct_user_input(string=city_name)}'
-                                       f'&limit=5'
-                                       f'&appid={self._API_KEY}') as responce:
+            async with session.get(url=api_url) as responce:
                 await database.increase_api_counter()
                 if responce.status == 200:
                     cities: list[dict] = await responce.json()

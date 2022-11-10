@@ -58,10 +58,12 @@ class WeatherFormat:
         name: str = data.get('name')
         state: str = data.get('state')
         country: str = data.get('country')
-        local_name: str = name if data.get('local_names') is None else data.get('local_names').get(lang)
+        local_names: [dict | None] = data.get('local_names')
+        local_name: str = name if local_names is None else local_names.get(lang)
+        city_name: str = name if local_name is None else local_name
         return CityData(
-            full_name=f'{name}, {country}' if state is None else f'{name}, {state}, {country}',
-            name=f'{local_name}',
+            full_name=f'{city_name}, {country}' if state is None else f'{city_name}, {state}, {country}',
+            name=f'{city_name}',
             latitude=round(data.get('lat'), 6),
             longitude=round(data.get('lon'), 6)
         )
