@@ -43,7 +43,7 @@ pip install -r requirements.txt
 mv .env.dist .env
 ```
 
-<img align="right" width="200" src="https://raw.githubusercontent.com/rin-gil/rin-gil/main/assets/img/projects/OpenWeatherBot/screenshot_en.png" alt="OpenWeatherBot home screen">
+<img align="right" width="300" src="https://raw.githubusercontent.com/rin-gil/rin-gil/main/assets/img/projects/OpenWeatherBot/screenshot_en.png" alt="OpenWeatherBot home screen">
 
 ### Setup and run
 
