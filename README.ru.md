@@ -4,10 +4,10 @@
 
 <p align="center">
     <a href="https://www.python.org/downloads/release/python-3108/"><img src="https://img.shields.io/badge/python-v3.10-informational" alt="python version"></a>
-    <a href="https://pypi.org/project/aiogram/2.22.1/"><img src="https://img.shields.io/badge/aiogram-2.22.1-informational" alt="aiogram version"></a>
-    <a href="https://pypi.org/project/aiohttp/3.8.1/"><img src="https://img.shields.io/badge/aiohttp-3.8.1-informational" alt="aiohttp version"></a>
-    <a href="https://pypi.org/project/aioschedule/0.5.2/"><img src="https://img.shields.io/badge/aioschedule-0.5.2-informational" alt="aioschedule version"></a>
-    <a href="https://pypi.org/project/aiosqlite/0.17.0/"><img src="https://img.shields.io/badge/aiosqlite-0.17.0-informational" alt="aiosqlite version"></a>
+    <a href="https://pypi.org/project/aiogram/2.22.1/"><img src="https://img.shields.io/badge/aiogram-v2.22.1-informational" alt="aiogram version"></a>
+    <a href="https://pypi.org/project/aiohttp/3.8.1/"><img src="https://img.shields.io/badge/aiohttp-v3.8.1-informational" alt="aiohttp version"></a>
+    <a href="https://pypi.org/project/aioschedule/0.5.2/"><img src="https://img.shields.io/badge/aioschedule-v0.5.2-informational" alt="aioschedule version"></a>
+    <a href="https://pypi.org/project/aiosqlite/0.17.0/"><img src="https://img.shields.io/badge/aiosqlite-v0.17.0-informational" alt="aiosqlite version"></a>
     <a href="https://pypi.org/project/environs/9.5.0/"><img src="https://img.shields.io/badge/environs-v9.5.0-informational" alt="environs version"></a>
     <a href="https://pypi.org/project/Pillow/9.3.0/"><img src="https://img.shields.io/badge/Pillow-v9.3.0-informational" alt="Pillow version"></a>
     <a href="https://github.com/rin-gil/OpenWeatherBot/blob/master/LICENCE"><img src="https://img.shields.io/badge/licence-MIT-success" alt="MIT licence"></a>
