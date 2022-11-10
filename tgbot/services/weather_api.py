@@ -3,7 +3,7 @@
 from aiohttp import ClientSession
 
 from tgbot.config import load_config, BOT_LOGO
-from tgbot.misc.loging import logger
+from tgbot.misc.logging import logger
 from tgbot.models.database import database, UserWeatherSettings
 from tgbot.models.localization import locale
 from tgbot.services.weather_formatter import CityData, formatter

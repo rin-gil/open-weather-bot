@@ -5,7 +5,7 @@ from os.path import isfile, join
 from pathlib import Path
 
 from tgbot.config import BASE_DIR
-from tgbot.misc.loging import logger
+from tgbot.misc.logging import logger
 
 
 class Localization:

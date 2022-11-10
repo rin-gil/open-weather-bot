@@ -7,7 +7,7 @@ from typing import NamedTuple
 from aiosqlite import connect
 
 from tgbot.config import BASE_DIR
-from tgbot.misc.loging import logger
+from tgbot.misc.logging import logger
 
 
 class UserWeatherSettings(NamedTuple):
@@ -23,6 +23,7 @@ class UserWeatherSettings(NamedTuple):
 
 class Database:
     """ A class for working with the database """
+
     def __init__(self, path: str) -> None:
         """
         Defines the path to the database file
@@ -111,6 +112,29 @@ class Database:
                         longitude=row[5],
                         units=row[6]
                     )
+
+    async def get_all_users(self) -> list[UserWeatherSettings]:
+        """
+        Returns the settings of all users
+
+        :return: users weather settings
+        """
+        users: list[UserWeatherSettings] = []
+        async with connect(database=self._db_path) as db:
+            async with db.execute("""SELECT * FROM users""") as cursor:
+                async for row in cursor:
+                    users.append(
+                        UserWeatherSettings(
+                            id=row[0],
+                            dialog_message_id=row[1],
+                            lang=row[2],
+                            city=row[3],
+                            latitude=row[4],
+                            longitude=row[5],
+                            units=row[6]
+                        )
+                    )
+        return users
 
     async def save_user_settings(self, settings: dict) -> None:
         """
