@@ -113,29 +113,6 @@ class Database:
                         units=row[6]
                     )
 
-    async def get_all_users(self) -> list[UserWeatherSettings]:
-        """
-        Returns the settings of all users
-
-        :return: users weather settings
-        """
-        users: list[UserWeatherSettings] = []
-        async with connect(database=self._db_path) as db:
-            async with db.execute("""SELECT * FROM users""") as cursor:
-                async for row in cursor:
-                    users.append(
-                        UserWeatherSettings(
-                            id=row[0],
-                            dialog_message_id=row[1],
-                            lang=row[2],
-                            city=row[3],
-                            latitude=row[4],
-                            longitude=row[5],
-                            units=row[6]
-                        )
-                    )
-        return users
-
     async def save_user_settings(self, settings: dict) -> None:
         """
         Saves the user's weather settings in the database
@@ -166,6 +143,40 @@ class Database:
             )
             await db.commit()
 
+    async def get_all_users(self) -> list[UserWeatherSettings]:
+        """
+        Returns the settings of all users
+
+        :return: users weather settings
+        """
+        users: list[UserWeatherSettings] = []
+        async with connect(database=self._db_path) as db:
+            async with db.execute("""SELECT * FROM users""") as cursor:
+                async for row in cursor:
+                    users.append(
+                        UserWeatherSettings(
+                            id=row[0],
+                            dialog_message_id=row[1],
+                            lang=row[2],
+                            city=row[3],
+                            latitude=row[4],
+                            longitude=row[5],
+                            units=row[6]
+                        )
+                    )
+        return users
+
+    async def get_users_counter(self) -> int:
+        """
+        Returns the count of users in the database
+
+        :return: count of users
+        """
+        async with connect(database=self._db_path) as db:
+            async with db.execute("""SELECT COUNT() FROM users""") as cursor:
+                async for row in cursor:
+                    return row[0]
+
     async def delete_user(self, user_id: int) -> None:
         """
         Deletes a user from the database
@@ -175,21 +186,6 @@ class Database:
         """
         async with connect(database=self._db_path) as db:
             await db.execute("""DELETE FROM users WHERE id=?;""", (user_id,))
-            await db.commit()
-
-    async def increase_api_counter(self) -> None:
-        """
-        Increases OpenWeatherMap API request counter value
-
-        :return: None
-        """
-        async with connect(database=self._db_path) as db:
-            await db.execute(
-                """
-                INSERT INTO api_request_counters (month, counter) VALUES (?, ?)
-                ON CONFLICT (month) DO UPDATE SET counter=counter+1;
-                """, (datetime.now().strftime('%Y.%m'), 1)
-            )
             await db.commit()
 
     async def get_api_counter_value(self) -> int:
@@ -206,6 +202,21 @@ class Database:
             ) as cursor:
                 async for row in cursor:
                     return row[0]
+
+    async def increase_api_counter(self) -> None:
+        """
+        Increases OpenWeatherMap API request counter value
+
+        :return: None
+        """
+        async with connect(database=self._db_path) as db:
+            await db.execute(
+                """
+                INSERT INTO api_request_counters (month, counter) VALUES (?, ?)
+                ON CONFLICT (month) DO UPDATE SET counter=counter+1;
+                """, (datetime.now().strftime('%Y.%m'), 1)
+            )
+            await db.commit()
 
 
 database: Database = Database(path=join(BASE_DIR, 'db.sqlite3'))

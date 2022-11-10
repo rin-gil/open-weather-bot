@@ -18,11 +18,14 @@ async def stats(message: Message) -> None:
     :return: None
     """
     await message.delete()
-    counter: int = await database.get_api_counter_value()
+    api_counter: int = await database.get_api_counter_value()
+    users_counter: int = await database.get_users_counter()
     raw_text: str = await locale.get_translate(lang=message.from_user.language_code, translate='statistics')
     phrases: list[str] = raw_text.split('---')
-    text = f'ℹ️ {phrases[0]}, <b>{round((counter / 1000000) * 100)} %</b> {phrases[1]}: ' \
-           f'<b>{"{0:,}".format(counter).replace(",", " ")}</b> {phrases[2]} <b>1 000 000</b>'
+    text = f'ℹ️ <b>{phrases[0]}:</b>\n\n' \
+           f'\u2022 {phrases[1]}, <b>{round((api_counter / 1000000) * 100)} %</b> {phrases[2]}: ' \
+           f'<b>{"{0:,}".format(api_counter).replace(",", " ")}</b> {phrases[3]} <b>1 000 000</b>\n' \
+           f'\u2022 {phrases[4]}: <b>{users_counter}</b>'
     answer: Message = await message.bot.send_photo(chat_id=message.from_user.id,
                                                    photo=InputFile(BOT_LOGO), caption=text)
     await sleep(10)

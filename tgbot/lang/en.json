@@ -9,7 +9,7 @@
   "loading_data": "\u23F3 Downloading weather data...",
   "save_settings": "\uD83C\uDF26 The weather setup is complete\n\nThe data will be updated automatically every 3 hours",
 
-  "statistics": "Since beginning of the month---requests have been spent---out of",
+  "statistics": "Statistics---Since beginning of the month---requests have been spent---out of---Users in the database",
 
   "error_weather": "\u274C Unknown error when receiving weather data",
 
