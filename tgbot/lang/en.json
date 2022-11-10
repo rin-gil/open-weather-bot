@@ -1,0 +1,24 @@
+{
+  "start": "Let's set the weather! \uD83C\uDF26\n\nWrite the name of the city or send your coordinates:",
+  "stop": "\u274C All of your data has been deleted",
+  "select_city": "\uD83D\uDD0E Searching..",
+  "select_city_error": "\u274C I couldn't find a single city!\n\nTry changing the name of the city:",
+  "select_city_success": "\uD83C\uDFD9 Select the desired city:",
+  "another_city": "\u25C0 Select another city",
+  "choice_units": "\uD83C\uDF21 Choose units of temperature measurement:",
+  "loading_data": "\u23F3 Downloading weather data...",
+  "save_settings": "\uD83C\uDF26 The weather setup is complete\n\nThe data will be updated automatically every 3 hours",
+
+  "statistics": "Statistics---Since beginning of the month---requests have been spent---out of---Users in the database",
+
+  "error_weather": "\u274C Unknown error when receiving weather data",
+
+  "feels_like": "feels like",
+  "humidity": "Humidity",
+  "wind_speed": "Wind speed",
+  "wind_gust": "gusts to",
+  "pressure": "Pressure",
+  "visibility": "Visibility",
+  "sunrise": "Sunrise",
+  "sunset": "Sunset"
+}

@@ -1,0 +1,1 @@
+Example configuration for running the bot on a server as a systemd service
