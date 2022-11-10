@@ -8,7 +8,7 @@ from environs import Env
 
 
 BASE_DIR: Path = Path(__file__).resolve().parent
-BOT_LOGO: str = join(BASE_DIR, 'assets\\logo\\bot_logo.png')
+BOT_LOGO: str = join(BASE_DIR, 'assets/logo/bot_logo.png')
 
 
 @dataclass
