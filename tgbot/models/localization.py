@@ -54,5 +54,11 @@ class Localization:
             logger.error('No translation found for the %s language, EN was used', lang.upper())
             return self._translate.get('en').get(translate)
 
+    async def get_list_languages(self) -> list[str]:
+        language_codes: list[str] = []
+        for language_code in self._translate.keys():
+            language_codes.append(language_code)
+        return language_codes
+
 
 locale: Localization = Localization(path=join(BASE_DIR, 'lang'))
