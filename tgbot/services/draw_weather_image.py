@@ -1,7 +1,7 @@
 """ Generates an image with weather forecast information """
 
 from dataclasses import dataclass
-from os import path
+from os import makedirs, path
 from typing import NamedTuple
 
 from PIL import Image, ImageDraw, ImageFont
@@ -29,6 +29,10 @@ class WeatherForecastImage:
     _ICONS_DIR: str = path.join(BASE_DIR, 'assets/ico')
     _FONT: str = path.join(BASE_DIR, 'assets/font/Rubik-Bold.ttf')
     _IMAGES_DIR: str = path.join(BASE_DIR, 'temp')
+
+    def __init__(self):
+        if not path.exists(self._IMAGES_DIR):
+            makedirs(self._IMAGES_DIR)
 
     @staticmethod
     def _get_temperature_color(temperature: str) -> str:
