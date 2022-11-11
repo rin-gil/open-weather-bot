@@ -43,7 +43,7 @@ class WeatherAPI:
                          lang: str,
                          city_name: [str | None] = None,
                          latitude: [float | None] = None,
-                         longitude: [float | None] = None, ) -> list[CityData]:
+                         longitude: [float | None] = None) -> list[CityData]:
         """
         Returns the list of found cities
 
@@ -53,7 +53,6 @@ class WeatherAPI:
         :param longitude: city longitude
         :return: list of found cities
         """
-        result: list[CityData] = []
         if city_name is None:
             api_url: str = f'{self._GEOCODING_API_URL}/reverse' \
                            f'?lat={latitude}&lon={longitude}' \
@@ -65,6 +64,7 @@ class WeatherAPI:
         async with ClientSession() as session:
             async with session.get(url=api_url) as responce:
                 await database.increase_api_counter()
+                result: list[CityData] = []
                 if responce.status == 200:
                     cities: list[dict] = await responce.json()
                     if len(cities) != 0:

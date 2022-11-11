@@ -6,7 +6,7 @@ from asyncio import sleep
 from aioschedule import every, run_pending
 
 from aiogram import Dispatcher
-from aiogram.types import InputFile
+from aiogram.types import InputFile, Message
 from aiogram.utils.exceptions import BotBlocked, MessageToDeleteNotFound
 
 from tgbot.models.database import database, Users
@@ -19,9 +19,9 @@ async def update_weather_data(dp: Dispatcher) -> None:
     for user in users:
         image_path: str = await weather.get_weather_forecast(user_id=user.id)
         try:
-            reply = await dp.bot.send_photo(chat_id=user.id, photo=InputFile(image_path),
-                                            caption=await weather.get_current_weather(user_id=user.id),
-                                            disable_notification=True)
+            reply: Message = await dp.bot.send_photo(chat_id=user.id, photo=InputFile(image_path),
+                                                     caption=await weather.get_current_weather(user_id=user.id),
+                                                     disable_notification=True)
             await dp.bot.delete_message(chat_id=user.id, message_id=user.dialog_message_id)
             await database.save_dialog_message_id(user_id=user.id, dialog_message_id=reply.message_id)
         except BotBlocked:
