@@ -23,8 +23,9 @@ async def stats(message: Message) -> None:
     raw_text: str = await locale.get_translate(lang=message.from_user.language_code, translate='statistics')
     phrases: list[str] = raw_text.split('---')
     text = f'ℹ️ <b>{phrases[0]}:</b>\n\n' \
-           f'\u2022 {phrases[1]}, <b>{round((api_counter / 1000000) * 100)} %</b> {phrases[2]}: ' \
-           f'<b>{"{0:,}".format(api_counter).replace(",", " ")}</b> {phrases[3]} <b>1 000 000</b>\n' \
+           f'\u2022 {phrases[1]},\n' \
+           f'  <b>{round((api_counter / 1000000) * 100)} %</b> {phrases[2]}:\n' \
+           f'  <b>{"{0:,}".format(api_counter).replace(",", " ")}</b> {phrases[3]} <b>1 000 000</b>\n\n' \
            f'\u2022 {phrases[4]}: <b>{users_counter}</b>'
     answer: Message = await message.bot.send_photo(chat_id=message.from_user.id,
                                                    photo=InputFile(BOT_LOGO), caption=text)
