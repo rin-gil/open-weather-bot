@@ -132,7 +132,7 @@ class WeatherFormat:
                f'\n' \
                f'🌡 <b>{temp}{temp_units}</b>, {feels_like_locale} <b>{feels_like}{temp_units}</b>, {description}\n' \
                f'\n' \
-               f'💦 {humidity_locale}: <b>{humidity} %</b>, {dew_point_locale}: <b>{dew_point}{temp_units}</b>\n' \
+               f'💦 {humidity_locale}: <b>{humidity}%</b>, {dew_point_locale}: <b>{dew_point}{temp_units}</b>\n' \
                f'💨 {wind_speed_locale}: <b>{wind_speed} {wind_units}</b>, {gust_locale} <b>{gust} {wind_units}</b>\n' \
                f'🌡 {pressure_locale}: <b>{pressure} hPa</b>\n' \
                f'🌫️ {visibility_locale}: <b>{visibility} km</b>\n' \
