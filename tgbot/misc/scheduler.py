@@ -2,12 +2,11 @@
 
 from os import remove
 
-from asyncio import sleep
-from aioschedule import every, run_pending
-
 from aiogram import Dispatcher
 from aiogram.types import InputFile, Message
 from aiogram.utils.exceptions import BotBlocked, MessageToDeleteNotFound
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from tgbot.models.database import database, Users
 from tgbot.services.weather_api import weather
@@ -32,8 +31,12 @@ async def update_weather_data(dp: Dispatcher) -> None:
 
 
 async def schedule(dp) -> None:
-    """ Starts the function to update weather data on a schedule """
-    every(3).hours.do(update_weather_data, dp)
-    while True:
-        await run_pending()
-        await sleep(1)
+    scheduler: AsyncIOScheduler = AsyncIOScheduler()
+    scheduler.add_job(
+        func=update_weather_data,
+        trigger='cron',
+        hour='0, 3, 6, 9, 12, 15, 18, 21',
+        args=(dp,),
+        timezone='UTC'
+    )
+    scheduler.start()
