@@ -19,6 +19,7 @@
 
   "feels_like": "ощущается как",
   "humidity": "Влажность",
+  "dew_point": "Точка росы",
   "wind_speed": "Скорость ветра",
   "wind_gust": "порывы до",
   "pressure": "Давление",

@@ -19,6 +19,7 @@
 
   "feels_like": "feels like",
   "humidity": "Humidity",
+  "dew_point": "Dew point",
   "wind_speed": "Wind speed",
   "wind_gust": "gusts to",
   "pressure": "Pressure",

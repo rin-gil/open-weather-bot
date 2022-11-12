@@ -1,6 +1,7 @@
 """ Formats the received weather data in the desired format """
 
 from datetime import datetime
+from math import log
 from typing import NamedTuple
 
 from tgbot.models.localization import locale
@@ -47,6 +48,23 @@ class WeatherFormat:
         return '🌀'  # default
 
     @staticmethod
+    async def _dew_point(temp: int, humidity: int) -> int:
+        """
+        Calculates the surface temperature at which condensation occurs (dew point)
+
+        :param temp: Air temperature
+        :param humidity: Relative humidity of air
+        :return: dew point
+        """
+        const_a: float = 17.27
+        const_b: float = 237.7
+
+        async def func(t=temp, h=humidity):
+            return (const_a * t) / (const_b + t) + log(h / 100)
+
+        return round((const_b * await func()) / (const_a - await func()))
+
+    @staticmethod
     async def city_data(data: dict, lang: str) -> CityData:
         """
         Formats the city data
@@ -90,6 +108,9 @@ class WeatherFormat:
         humidity: int = data.get('main').get('humidity')
         humidity_locale: str = await locale.get_translate(lang=lang, translate='humidity')
 
+        dew_point: int = await self._dew_point(temp=temp, humidity=humidity)
+        dew_point_locale: str = await locale.get_translate(lang=lang, translate='dew_point')
+
         wind_speed: int = round(data.get('wind').get('speed'))
         wind_speed_locale: str = await locale.get_translate(lang=lang, translate='wind_speed')
         wind_units: str = 'm/s' if units == 'metric' else 'mph'
@@ -109,9 +130,9 @@ class WeatherFormat:
 
         return f'<b>{emoji} {city}, {time}</b>\n' \
                f'\n' \
-               f'🌡 <b>{temp} {temp_units}</b>, {feels_like_locale} <b>{feels_like} {temp_units}</b>, {description}\n' \
+               f'🌡 <b>{temp}{temp_units}</b>, {feels_like_locale} <b>{feels_like}{temp_units}</b>, {description}\n' \
                f'\n' \
-               f'💦 {humidity_locale}: <b>{humidity} %</b>\n' \
+               f'💦 {humidity_locale}: <b>{humidity} %</b>, {dew_point_locale}: <b>{dew_point}{temp_units}</b>\n' \
                f'💨 {wind_speed_locale}: <b>{wind_speed} {wind_units}</b>, {gust_locale} <b>{gust} {wind_units}</b>\n' \
                f'🌡 {pressure_locale}: <b>{pressure} hPa</b>\n' \
                f'🌫️ {visibility_locale}: <b>{visibility} km</b>\n' \
