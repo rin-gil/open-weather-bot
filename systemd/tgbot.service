@@ -1,3 +1,4 @@
+# Example configuration for running the bot on a server as a systemd service
 [Unit]
 Description=OpenWeatherBot daemon
 After=network.target
@@ -7,7 +8,7 @@ User=tgbot
 Group=tgbot
 Type=simple
 WorkingDirectory=/opt/OpenWeatherBot
-ExecStart=/opt/OpenWeatherBot/venv/bin/python bot.py
+ExecStart=/opt/OpenWeatherBot/venv/bin/python /opt/OpenWeatherBot/bot.py
 Restart=always
 
 [Install]
