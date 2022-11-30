@@ -100,7 +100,7 @@ mv .env.dist .env
   перевода для всех локализаций:
   1. извлечь строки для перевода из кода:
 
-     `pybabel extract --input-dirs=./tgbot --output-file=tgbot/locales/tgbot.pot --sort-by-file --project=YoutubeMusicDownloadBot`
+     `pybabel extract --input-dirs=./tgbot --output-file=tgbot/locales/tgbot.pot --sort-by-file --project=OpenWeatherBot`
   2. создать файлы перевода для всех локализаций:
 
      `pybabel init --input-file=tgbot/locales/tgbot.pot --output-dir=tgbot/locales --domain=tgbot --locale={language}`
