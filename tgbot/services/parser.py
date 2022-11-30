@@ -1,6 +1,8 @@
 """Parses raw data on weather with OpenWeatherAPI"""
 
-from datetime import datetime
+from datetime import datetime, timedelta
+
+from tzlocal import get_localzone
 
 from tgbot.misc.logging import logger
 from tgbot.services.classes import CityData, CurrentWeatherData, ForecastData
@@ -50,9 +52,14 @@ class ParseWeather:
                 precipitation = raw_data["rain"]["1h"]
             else:
                 precipitation = None
-            time: str = datetime.fromtimestamp(raw_data["dt"]).strftime("%d %b %H:%M")
-            sunrise: str = datetime.fromtimestamp(raw_data["sys"]["sunrise"]).strftime("%H:%M")
-            sunset: str = datetime.fromtimestamp(raw_data["sys"]["sunset"]).strftime("%H:%M")
+            server_time_offset_from_utc: timedelta | None = datetime.now(get_localzone()).utcoffset()
+            if server_time_offset_from_utc:
+                time_offset: int = raw_data["timezone"] - int(server_time_offset_from_utc.total_seconds())
+            else:
+                time_offset = raw_data["timezone"]
+            time: str = datetime.fromtimestamp(raw_data["dt"] + time_offset).strftime("%d %b %H:%M")
+            sunrise: str = datetime.fromtimestamp(raw_data["sys"]["sunrise"] + time_offset).strftime("%H:%M")
+            sunset: str = datetime.fromtimestamp(raw_data["sys"]["sunset"] + time_offset).strftime("%H:%M")
             return CurrentWeatherData(
                 temp=temp,
                 feels_like=feels_like,
