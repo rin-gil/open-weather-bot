@@ -23,7 +23,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install mypy==0.991
           pip install pylint==2.15.5
-          mypy --install-types
+          pip install types-tzlocal
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Lint with pylint
         run: |
