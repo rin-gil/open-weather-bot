@@ -1,6 +1,9 @@
+"""Describes the state for the FSM (Final State Machine)"""
+
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
 
-class UserInput(StatesGroup):
-    """Describes the state for the FSM (Final State Machine)"""
-    Allow = State()
+class WeatherSetupDialog(StatesGroup):
+    """Describes the steps of the weather setup dialog"""
+
+    EnterCityName = State()

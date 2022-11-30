@@ -1,0 +1,170 @@
+# Russian translations for OpenWeatherBot.
+# Copyright (C) 2022 Ringil
+# This file is distributed under the same license as the OpenWeatherBot
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenWeatherBot v1.1.0\n"
+"Report-Msgid-Bugs-To: noreply@domain.com\n"
+"POT-Creation-Date: 2022-11-29 23:55+0200\n"
+"PO-Revision-Date: 2022-11-29 23:56+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: tgbot/handlers/admin.py:24
+msgid "Statistics"
+msgstr "Статистика"
+
+#: tgbot/handlers/admin.py:26
+msgid "Since beginning of the month"
+msgstr "С начала текущего месяца"
+
+#: tgbot/handlers/admin.py:28
+msgid "requests have been spent"
+msgstr "запросов было использовано"
+
+#: tgbot/handlers/admin.py:32
+msgid "out of"
+msgstr "из"
+
+#: tgbot/handlers/admin.py:34
+msgid "Users in the database"
+msgstr "Пользователей в базе данных"
+
+#: tgbot/handlers/dialog.py:47
+msgid "Let's set the weather!"
+msgstr "Давай настроим погоду!"
+
+#: tgbot/handlers/dialog.py:49 tgbot/handlers/dialog.py:102
+msgid "Write the name of the city or send your coordinates"
+msgstr "Напиши название города или пришли свои координаты"
+
+#: tgbot/handlers/dialog.py:75
+msgid "Select the desired city"
+msgstr "Выбери нужный город"
+
+#: tgbot/handlers/dialog.py:82
+msgid "I couldn't find a single city!"
+msgstr "Я не нашел ни одного города!"
+
+#: tgbot/handlers/dialog.py:84
+msgid "Try changing the name of the city"
+msgstr "Попробуй изменить название города"
+
+#: tgbot/handlers/dialog.py:117
+msgid "Choose units of temperature measurement"
+msgstr "Выбери единицы измерения температуры"
+
+#: tgbot/handlers/dialog.py:144
+msgid "The weather setup is complete"
+msgstr "Настройка погоды завершена"
+
+#: tgbot/handlers/dialog.py:146
+msgid "The data will be updated automatically every 3 hours"
+msgstr "Данные будут обновляться автоматически каждые 3 часа"
+
+#: tgbot/handlers/other.py:23
+msgid "is written in"
+msgstr "написан на"
+
+#: tgbot/handlers/other.py:25
+msgid "using the"
+msgstr "с использованием"
+
+#: tgbot/handlers/other.py:27
+msgid "library"
+msgstr "библиотеки"
+
+#: tgbot/handlers/other.py:29
+msgid "Weather data provided by"
+msgstr "Данные о погоде предоставлены"
+
+#: tgbot/handlers/other.py:31
+msgid "Icon by"
+msgstr "Иконки от"
+
+#: tgbot/handlers/other.py:33
+msgid "on"
+msgstr "с"
+
+#: tgbot/handlers/other.py:35
+msgid "The source code is available on"
+msgstr "Исходный код доступен на"
+
+#: tgbot/handlers/other.py:51
+msgid "All of your data has been deleted"
+msgstr "Все твои данные были удалены"
+
+#: tgbot/keyboards/inline.py:24
+msgid "Select another city"
+msgstr "Выбрать другой город"
+
+#: tgbot/keyboards/reply.py:14
+msgid "Send geolocation"
+msgstr "Отправить геолокацию"
+
+#: tgbot/misc/commands.py:17
+msgid "Set weather forecast"
+msgstr "Настроить прогноз погоды"
+
+#: tgbot/misc/commands.py:18
+msgid "Bot info"
+msgstr "Информация о боте"
+
+#: tgbot/misc/commands.py:19
+msgid "Stop bot and delete data"
+msgstr "Остановить бота и удалить данные"
+
+#: tgbot/services/formatter.py:74
+msgid "of precipitation in one hour"
+msgstr "осадков выпадет в течение одного часа"
+
+#: tgbot/services/formatter.py:79
+msgid "gusts to"
+msgstr "порывы до"
+
+#: tgbot/services/formatter.py:86
+msgid "feels like"
+msgstr "ощущается как"
+
+#: tgbot/services/formatter.py:89
+msgid "Humidity"
+msgstr "Влажность"
+
+#: tgbot/services/formatter.py:91
+msgid "Dew point"
+msgstr "Точка росы"
+
+#: tgbot/services/formatter.py:94
+msgid "Wind speed"
+msgstr "Скорость ветра"
+
+#: tgbot/services/formatter.py:97
+msgid "Pressure"
+msgstr "Давление"
+
+#: tgbot/services/formatter.py:100
+msgid "Visibility"
+msgstr "Видимость"
+
+#: tgbot/services/formatter.py:103
+msgid "Sunrise"
+msgstr "Восход"
+
+#: tgbot/services/formatter.py:105
+msgid "Sunset"
+msgstr "Закат"
+
+#: tgbot/services/weather.py:102
+msgid "Failed to obtain data about the current weather"
+msgstr "Не удалось получить данные о текущей погоде"
+
