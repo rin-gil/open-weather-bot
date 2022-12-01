@@ -49,7 +49,7 @@
 ## Open Weather Bot
 
 Telegram bot that shows the weather forecast.
-The working version is available at [https://t.me/OpenWeatherSmartBot](https://t.me/OpenWeatherSmartBot)
+The working version is available at [@OpenWeatherSmartBot](https://t.me/OpenWeatherSmartBot)
 
 ### Features
 

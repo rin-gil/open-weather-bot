@@ -49,7 +49,7 @@
 ## Open Weather Bot
 
 Телеграм-бот, який показує прогноз погоди.
-Робоча версія доступна за посиланням [https://t.me/OpenWeatherSmartBot](https://t.me/OpenWeatherSmartBot)
+Робоча версія доступна за посиланням [@OpenWeatherSmartBot](https://t.me/OpenWeatherSmartBot)
 
 ### Можливості
 
