@@ -37,35 +37,35 @@ class DrawWeatherImage:
             temp = round((int(temperature.removesuffix("°F")) - 32) * (5 / 9))
 
         if temp >= 50:
-            temp_color: str = '#2b0001'
+            temp_color: str = "#2b0001"
         elif 50 > temp >= 40:
-            temp_color = '#6b1527'
+            temp_color = "#6b1527"
         elif 40 > temp >= 30:
-            temp_color = '#b73466'
+            temp_color = "#b73466"
         elif 30 > temp >= 25:
-            temp_color = '#db6c54'
+            temp_color = "#db6c54"
         elif 25 > temp >= 20:
-            temp_color = '#e09f41'
+            temp_color = "#e09f41"
         elif 20 > temp >= 15:
-            temp_color = '#e1ce39'
+            temp_color = "#e1ce39"
         elif 15 > temp >= 10:
-            temp_color = '#b8db41'
+            temp_color = "#b8db41"
         elif 10 > temp >= 5:
-            temp_color = '#5ac84b'
+            temp_color = "#5ac84b"
         elif 5 > temp >= 0:
-            temp_color = '#4db094'
+            temp_color = "#4db094"
         elif 0 > temp >= -5:
-            temp_color = '#4178be'
+            temp_color = "#4178be"
         elif -5 > temp >= -10:
-            temp_color = '#5751ac'
+            temp_color = "#5751ac"
         elif -10 > temp >= -15:
-            temp_color = '#291e6a'
+            temp_color = "#291e6a"
         elif -15 > temp >= -20:
-            temp_color = '#8e108e'
+            temp_color = "#8e108e"
         elif -20 > temp >= -30:
-            temp_color = '#f3a5f3'
+            temp_color = "#f3a5f3"
         else:
-            temp_color = '#e3e3e3'
+            temp_color = "#e3e3e3"
         return temp_color
 
     @staticmethod
@@ -125,34 +125,34 @@ class DrawWeatherImage:
             offset: int = round((99 - draw.textlength(text=text, font=font)) / 2)
             draw.text(xy=(pos_x + offset, pos_y), text=text, font=font, fill="#000000")
 
-        for _ in range(8):
+        for idx in range(8):
             # fill temperature columns
             cursor.pos_y = 0
             draw.rectangle(
                 xy=(cursor.pos_x, cursor.pos_y, cursor.pos_x + 98, cursor.pos_y + 163),
-                fill=self._get_temp_color(temperature=temp[_]),
+                fill=self._get_temp_color(temperature=temp[idx]),
             )
             # draw time
             cursor.pos_y = 15
-            draw_text_align_center(pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=24, text=time[_])
+            draw_text_align_center(pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=24, text=time[idx])
             # draw weather icons
             cursor.pos_y = 50
-            file_path: str = path.join(self._ICONS_DIR, f"{ico_code[_]}.png")
+            file_path: str = path.join(self._ICONS_DIR, f"{ico_code[idx]}.png")
             weather_icon: Image = Image.open(fp=file_path, mode="r", formats=("PNG",))
             canvas.alpha_composite(im=weather_icon, dest=(cursor.pos_x + 17, cursor.pos_y))
             weather_icon.close()
             # draw temperature
             cursor.pos_y = 126
-            draw_text_align_center(pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=24, text=temp[_])
+            draw_text_align_center(pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=24, text=temp[idx])
             # fill wind speed columns
             cursor.pos_y = 165
             draw.rectangle(
                 xy=(cursor.pos_x, cursor.pos_y, cursor.pos_x + 98, cursor.pos_y + 34),
-                fill=self._get_wind_color(wind_speed=wind_speed[_]),
+                fill=self._get_wind_color(wind_speed=wind_speed[idx]),
             )
             # draw wind speed
             cursor.pos_y = 173
-            draw_text_align_center(pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=18, text=wind_speed[_])
+            draw_text_align_center(pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=18, text=wind_speed[idx])
             # shift to the next column
             cursor.pos_x += 100
 
