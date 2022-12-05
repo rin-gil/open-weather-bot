@@ -39,31 +39,31 @@ class DrawWeatherImage:
 
         if temp >= 50:
             temp_color: str = "#2b0001"
-        elif 50 > temp >= 40:
+        elif 49 >= temp >= 40:
             temp_color = "#6b1527"
-        elif 40 > temp >= 30:
+        elif 39 >= temp >= 30:
             temp_color = "#b73466"
-        elif 30 > temp >= 25:
+        elif 29 >= temp >= 25:
             temp_color = "#db6c54"
-        elif 25 > temp >= 20:
+        elif 24 >= temp >= 20:
             temp_color = "#e09f41"
-        elif 20 > temp >= 15:
+        elif 19 >= temp >= 15:
             temp_color = "#e1ce39"
-        elif 15 > temp >= 10:
+        elif 14 >= temp >= 10:
             temp_color = "#b8db41"
-        elif 10 > temp >= 5:
+        elif 9 >= temp >= 5:
             temp_color = "#5ac84b"
-        elif 5 > temp >= 0:
+        elif 4 >= temp >= 0:
             temp_color = "#4db094"
-        elif 0 > temp >= -5:
+        elif -1 >= temp >= -5:
             temp_color = "#4178be"
-        elif -5 > temp >= -10:
+        elif -6 >= temp >= -10:
             temp_color = "#5751ac"
-        elif -10 > temp >= -15:
+        elif -11 >= temp >= -15:
             temp_color = "#291e6a"
-        elif -15 > temp >= -20:
+        elif -16 >= temp >= -20:
             temp_color = "#8e108e"
-        elif -20 > temp >= -30:
+        elif -21 >= temp >= -30:
             temp_color = "#f3a5f3"
         else:
             temp_color = "#e3e3e3"
@@ -77,33 +77,33 @@ class DrawWeatherImage:
         else:
             speed = round(float(wind_speed.removesuffix(" mph")) / 2.237)
 
-        if 0 <= speed < 10:
+        if 0 <= speed <= 9:
             wind_speed_color: str = "#5a5673"
-        elif 10 <= speed < 20:
+        elif 10 <= speed <= 19:
             wind_speed_color = "#5258ab"
-        elif 20 <= speed < 30:
+        elif 20 <= speed <= 29:
             wind_speed_color = "#4083b8"
-        elif 30 <= speed < 40:
+        elif 30 <= speed <= 39:
             wind_speed_color = "#4ea98f"
-        elif 40 <= speed < 50:
+        elif 40 <= speed <= 49:
             wind_speed_color = "#4abe47"
-        elif 50 <= speed < 60:
+        elif 50 <= speed <= 59:
             wind_speed_color = "#8ec94b"
-        elif 60 <= speed < 70:
+        elif 60 <= speed <= 69:
             wind_speed_color = "#cad63e"
-        elif 70 <= speed < 80:
+        elif 70 <= speed <= 79:
             wind_speed_color = "#d8bf3d"
-        elif 80 <= speed < 90:
+        elif 80 <= speed <= 89:
             wind_speed_color = "#d69b44"
-        elif 90 <= speed < 100:
+        elif 90 <= speed <= 99:
             wind_speed_color = "#d5784c"
-        elif 100 <= speed < 110:
+        elif 100 <= speed <= 109:
             wind_speed_color = "#c7466f"
-        elif 110 <= speed < 120:
+        elif 110 <= speed <= 119:
             wind_speed_color = "#a3355b"
-        elif 120 <= speed < 130:
+        elif 120 <= speed <= 129:
             wind_speed_color = "#901c4f"
-        elif 130 <= speed < 140:
+        elif 130 <= speed <= 139:
             wind_speed_color = "#631a1b"
         else:
             wind_speed_color = "#2b0001"
@@ -117,7 +117,7 @@ class DrawWeatherImage:
         else:
             temp = round((int(temperature.removesuffix("°F")) - 32) * (5 / 9))
 
-        if 20 >= temp >= 0 or temp <= -30:
+        if 24 >= temp >= 0 or temp <= -21:
             return "#000000"
         return "#FFFFFF"
 
@@ -129,7 +129,7 @@ class DrawWeatherImage:
         else:
             speed = round(float(wind_speed.removesuffix(" mph")) / 2.237)
 
-        if 90 >= speed >= 40:
+        if 99 >= speed >= 40:
             return "#000000"
         return "#FFFFFF"
 
