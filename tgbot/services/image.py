@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from os import makedirs, path
 
 from PIL import Image, ImageDraw, ImageFont
+from PIL.PyAccess import PyAccess
 
 from tgbot.config import BASE_DIR
 from tgbot.services.classes import ForecastData
@@ -108,6 +109,43 @@ class DrawWeatherImage:
             wind_speed_color = "#2b0001"
         return wind_speed_color
 
+    @staticmethod
+    def _get_color_of_text_temperature(temperature: str) -> str:
+        """Returns the temperature text color code, depending on the temperature value"""
+        if temperature[-1:] == "C":
+            temp: int = int(temperature.removesuffix("°C"))
+        else:
+            temp = round((int(temperature.removesuffix("°F")) - 32) * (5 / 9))
+
+        if 20 >= temp >= 0 or temp <= -30:
+            return "#000000"
+        return "#FFFFFF"
+
+    @staticmethod
+    def _get_color_of_text_wind(wind_speed: str) -> str:
+        """Returns the wind speed text color code, depending on the wind speed value"""
+        if wind_speed[-1:] == "s":
+            speed: int = int(wind_speed.removesuffix(" m/s"))
+        else:
+            speed = round(float(wind_speed.removesuffix(" mph")) / 2.237)
+
+        if 90 >= speed >= 40:
+            return "#000000"
+        return "#FFFFFF"
+
+    @staticmethod
+    def _invert_image_color(image: Image) -> Image:
+        """Inverts the black color in the image"""
+        pixel_data: PyAccess | None = image.load()
+        size_x, size_y = image.size
+        for pos_y in range(size_y):
+            for pos_x in range(size_x):
+                if pixel_data:
+                    alpha = pixel_data[pos_x, pos_y][3]
+                    if alpha:
+                        pixel_data[pos_x, pos_y] = (255, 255, 255, alpha)
+        return image
+
     def draw_image(self, data: ForecastData, user_id: int) -> str:
         """Draws an image with weather forecast information"""
         cursor: Cursor = Cursor()
@@ -119,11 +157,11 @@ class DrawWeatherImage:
         ico_code: list[str] = data.ico_code
         wind_speed: list[str] = data.wind_speed
 
-        def draw_text_align_center(pos_x: int, pos_y: int, font_size: int, text: str) -> None:
+        def draw_text_align_center(pos_x: int, pos_y: int, font_size: int, text: str, color: str) -> None:
             """Draws specified text with center alignment"""
             font: ImageFont = ImageFont.truetype(font=self._FONT, size=font_size)
             offset: int = round((99 - draw.textlength(text=text, font=font)) / 2)
-            draw.text(xy=(pos_x + offset, pos_y), text=text, font=font, fill="#000000")
+            draw.text(xy=(pos_x + offset, pos_y), text=text, font=font, fill=color)
 
         for idx in range(8):
             # fill temperature columns
@@ -133,17 +171,24 @@ class DrawWeatherImage:
                 fill=self._get_temp_color(temperature=temp[idx]),
             )
             # draw time
+            color_of_text: str = self._get_color_of_text_temperature(temperature=temp[idx])
             cursor.pos_y = 15
-            draw_text_align_center(pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=24, text=time[idx])
+            draw_text_align_center(
+                pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=24, text=time[idx], color=color_of_text
+            )
             # draw weather icons
             cursor.pos_y = 50
             file_path: str = path.join(self._ICONS_DIR, f"{ico_code[idx]}.png")
             weather_icon: Image = Image.open(fp=file_path, mode="r", formats=("PNG",))
+            if color_of_text == "#FFFFFF":
+                weather_icon = self._invert_image_color(image=weather_icon)
             canvas.alpha_composite(im=weather_icon, dest=(cursor.pos_x + 17, cursor.pos_y))
             weather_icon.close()
             # draw temperature
             cursor.pos_y = 126
-            draw_text_align_center(pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=24, text=temp[idx])
+            draw_text_align_center(
+                pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=24, text=temp[idx], color=color_of_text
+            )
             # fill wind speed columns
             cursor.pos_y = 165
             draw.rectangle(
@@ -151,8 +196,11 @@ class DrawWeatherImage:
                 fill=self._get_wind_color(wind_speed=wind_speed[idx]),
             )
             # draw wind speed
+            color_of_text = self._get_color_of_text_wind(wind_speed=wind_speed[idx])
             cursor.pos_y = 173
-            draw_text_align_center(pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=18, text=wind_speed[idx])
+            draw_text_align_center(
+                pos_x=cursor.pos_x, pos_y=cursor.pos_y, font_size=18, text=wind_speed[idx], color=color_of_text
+            )
             # shift to the next column
             cursor.pos_x += 100
 
