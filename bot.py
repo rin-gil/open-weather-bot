@@ -8,6 +8,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from tgbot.config import load_config, Config
 from tgbot.filters.admin import AdminFilter
 from tgbot.handlers.admin import register_admin_handlers
+from tgbot.handlers.error import register_errors_handlers
 from tgbot.handlers.other import register_other_handlers
 from tgbot.handlers.dialog import register_dialog_handlers
 from tgbot.middlewares.localization import i18n
@@ -32,6 +33,7 @@ def register_all_handlers(dp: Dispatcher) -> None:
     register_admin_handlers(dp)
     register_other_handlers(dp)
     register_dialog_handlers(dp)
+    register_errors_handlers(dp)
 
 
 async def main() -> None:
