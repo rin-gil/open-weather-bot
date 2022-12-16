@@ -5,7 +5,7 @@ from aiohttp import ClientSession
 
 from tgbot.config import load_config, BOT_LOGO
 from tgbot.middlewares.localization import i18n
-from tgbot.misc.logging import logger
+from tgbot.misc.logger import logger
 from tgbot.models.database import database, UserWeatherSettings
 from tgbot.services.classes import CityData, CurrentWeatherData, ForecastData
 from tgbot.services.formatter import FormatWeather

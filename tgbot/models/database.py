@@ -7,7 +7,7 @@ from sys import exit as sys_exit
 from aiosqlite import connect
 
 from tgbot.config import DB_FILE
-from tgbot.misc.logging import logger
+from tgbot.misc.logger import logger
 from tgbot.services.classes import User, UserWeatherSettings
 
 

@@ -12,7 +12,7 @@ from tgbot.handlers.other import register_other_handlers
 from tgbot.handlers.dialog import register_dialog_handlers
 from tgbot.middlewares.localization import i18n
 from tgbot.misc.commands import set_default_commands
-from tgbot.misc.logging import logger
+from tgbot.misc.logger import logger
 from tgbot.misc.scheduler import schedule
 from tgbot.models.database import database
 

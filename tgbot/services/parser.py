@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from tzlocal import get_localzone
 
-from tgbot.misc.logging import logger
+from tgbot.misc.logger import logger
 from tgbot.services.classes import CityData, CurrentWeatherData, ForecastData
 
 
