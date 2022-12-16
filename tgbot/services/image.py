@@ -21,9 +21,9 @@ class Cursor:
 class DrawWeatherImage:
     """Draws an image with the weather forecast"""
 
-    _ICONS_DIR: str = path.join(BASE_DIR, "assets/ico")
-    _FONT: str = path.join(BASE_DIR, "assets/font/Rubik-Bold.ttf")
-    _TEMP_DIR: str = path.join(BASE_DIR, "temp")
+    _ICONS_DIR: str = path.join(BASE_DIR, "tgbot/assets/ico")
+    _FONT: str = path.join(BASE_DIR, "tgbot/assets/font/Rubik-Bold.ttf")
+    _TEMP_DIR: str = path.join(BASE_DIR, "tgbot/temp")
 
     def __init__(self) -> None:
         if not path.exists(self._TEMP_DIR):
