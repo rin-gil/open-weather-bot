@@ -3,5 +3,5 @@ aiohttp~=3.8.3
 aiosqlite~=0.18.0
 APScheduler~=3.9.1.post1
 environs~=9.5.0
-Pillow~=9.3.0
+Pillow~=9.4.0
 tzlocal~=4.2
