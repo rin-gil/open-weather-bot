@@ -1,4 +1,4 @@
-﻿aiogram~=2.23.1
+﻿aiogram~=2.24
 aiohttp~=3.8.3
 aiosqlite~=0.18.0
 APScheduler~=3.9.1.post1
