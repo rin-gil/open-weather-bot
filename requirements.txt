@@ -1,5 +1,5 @@
 ﻿aiogram~=2.23.1
-aiohttp~=3.8.3
+aiohttp~=3.8.4
 aiosqlite~=0.18.0
 APScheduler~=3.9.1.post1
 environs~=9.5.0
