@@ -58,7 +58,7 @@ class FormatWeather:
         def func():  # type: ignore
             return (const_a * temp) / (const_b + temp) + log(humidity / 100)
 
-        return round((const_b * func()) / (const_a - func()))
+        return round((const_b * func()) / (const_a - func()))  # type: ignore
 
     async def format_current_weather(
         self, weather_data: CurrentWeatherData, units: str, city: str, lang_code: str
