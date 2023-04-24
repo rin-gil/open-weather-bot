@@ -9,7 +9,7 @@ from aiogram.utils.exceptions import BotBlocked, RetryAfter, UserDeactivated
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from tgbot.models.database import database, User
+from tgbot.services.database import database, User
 from tgbot.services.weather import weather
 
 

@@ -9,7 +9,7 @@ from aiogram.types import InputFile, Message
 from tgbot.config import BOT_LOGO
 from tgbot.handlers.dialog import delete_previous_dialog_message
 from tgbot.middlewares.localization import i18n
-from tgbot.models.database import database
+from tgbot.services.database import database
 
 _ = i18n.gettext  # Alias for gettext method
 

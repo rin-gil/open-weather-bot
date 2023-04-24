@@ -15,7 +15,7 @@ from tgbot.middlewares.localization import i18n
 from tgbot.misc.commands import set_default_commands
 from tgbot.misc.logger import logger
 from tgbot.misc.scheduler import schedule
-from tgbot.models.database import database
+from tgbot.services.database import database
 
 
 def register_all_middlewares(dp: Dispatcher) -> None:

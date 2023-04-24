@@ -6,7 +6,7 @@ from aiohttp import ClientSession
 from tgbot.config import load_config, BOT_LOGO
 from tgbot.middlewares.localization import i18n
 from tgbot.misc.logger import logger
-from tgbot.models.database import database, UserWeatherSettings
+from tgbot.services.database import database, UserWeatherSettings
 from tgbot.services.classes import CityData, CurrentWeatherData, ForecastData
 from tgbot.services.formatter import FormatWeather
 from tgbot.services.image import DrawWeatherImage
@@ -30,15 +30,15 @@ class WeatherAPI:
         self._image = DrawWeatherImage()
 
     @staticmethod
-    async def _get_responce_from_api(api_url: str) -> list | dict | None:
+    async def _get_response_from_api(api_url: str) -> list | dict | None:
         """Returns the list of found cities"""
         async with ClientSession() as session:
-            async with session.get(url=api_url) as responce:
+            async with session.get(url=api_url) as response:
                 await database.increase_api_counter()
-                if responce.status == 200:
-                    result: list | dict = await responce.json()
+                if response.status == 200:
+                    result: list | dict = await response.json()
                     return result
-                error: dict = await responce.json()
+                error: dict = await response.json()
                 logger.error("Error when requesting WeatherGeocodeAPI: %s", error.get("message"))
                 return None
 
@@ -62,7 +62,7 @@ class WeatherAPI:
                 f"?q={await self._formatter.correct_user_input(city_name=city_name_or_location)}"
                 f"&limit=5&appid={self._api_key}"
             )
-        raw_city_data: list | dict | None = await self._get_responce_from_api(api_url=api_url)
+        raw_city_data: list | dict | None = await self._get_response_from_api(api_url=api_url)
         city_list: list[CityData] = []
         if isinstance(raw_city_data, list):
             for raw_city in raw_city_data:
@@ -88,7 +88,7 @@ class WeatherAPI:
             f"&units={user_settings.units}"
             f"&appid={self._api_key}"
         )
-        raw_data: list | dict | None = await self._get_responce_from_api(api_url=api_url)
+        raw_data: list | dict | None = await self._get_response_from_api(api_url=api_url)
         if isinstance(raw_data, dict):
             weather_data: CurrentWeatherData | None = await self._parser.parse_current_weather(raw_data=raw_data)
             if weather_data:
@@ -116,10 +116,10 @@ class WeatherAPI:
             f"&lon={user_settings.longitude}"
             f"&lang={user_settings.lang}"
             f"&units={user_settings.units}"
-            f"&cnt=8"
+            "&cnt=8"
             f"&appid={self._api_key}"
         )
-        raw_data: list | dict | None = await self._get_responce_from_api(api_url=api_url)
+        raw_data: list | dict | None = await self._get_response_from_api(api_url=api_url)
         if isinstance(raw_data, dict):
             weather_forecast_data: ForecastData | None = await self._parser.parse_weather_forecast(
                 raw_data=raw_data, units=user_settings.units

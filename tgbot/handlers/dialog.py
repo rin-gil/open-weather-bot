@@ -13,7 +13,7 @@ from tgbot.keyboards.inline import create_city_selection_kb, create_units_select
 from tgbot.keyboards.reply import create_geolocation_kb
 from tgbot.middlewares.localization import i18n
 from tgbot.misc.states import WeatherSetupDialog
-from tgbot.models.database import database
+from tgbot.services.database import database
 from tgbot.services.classes import CityData
 from tgbot.services.weather import weather
 
