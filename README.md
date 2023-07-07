@@ -12,8 +12,8 @@
     <a href="https://pypi.org/project/aiohttp/3.8.3/">
         <img src="https://img.shields.io/badge/aiohttp-v3.8.3-informational" alt="aiohttp version">
     </a>
-    <a href="https://pypi.org/project/aiosqlite/0.18.0/">
-        <img src="https://img.shields.io/badge/aiosqlite-v0.18.0-informational" alt="aiosqlite version">
+    <a href="https://pypi.org/project/aiosqlite/0.19.0/">
+        <img src="https://img.shields.io/badge/aiosqlite-v0.19.0-informational" alt="aiosqlite version">
     </a>
     <a href="https://pypi.org/project/APScheduler/3.10.1/">
         <img src="https://img.shields.io/badge/APScheduler-v3.10.1-informational" alt="APScheduler version">
@@ -21,11 +21,11 @@
     <a href="https://pypi.org/project/environs/9.5.0/">
         <img src="https://img.shields.io/badge/environs-v9.5.0-informational" alt="environs version">
     </a>
-    <a href="https://pypi.org/project/Pillow/9.5.0/">
-        <img src="https://img.shields.io/badge/Pillow-v9.3.0-informational" alt="Pillow version">
+    <a href="https://pypi.org/project/Pillow/10.0.0/">
+        <img src="https://img.shields.io/badge/Pillow-v10.0.0-informational" alt="Pillow version">
     </a>
-    <a href="https://pypi.org/project/tzlocal/4.3/">
-        <img src="https://img.shields.io/badge/tzlocal-v4.3-informational" alt="tzlocal version">
+    <a href="https://pypi.org/project/tzlocal/5.0.1/">
+        <img src="https://img.shields.io/badge/tzlocal-v5.0.1-informational" alt="tzlocal version">
     </a>
     <a href="https://github.com/psf/black">
         <img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg">
