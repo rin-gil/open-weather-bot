@@ -11,7 +11,7 @@ BASE_DIR: Path = Path(__file__).resolve().parent.parent
 BOT_LOGO: str = normpath(join(BASE_DIR, "tgbot/assets/logo/bot_logo.png"))
 DB_FILE: str = normpath(join(BASE_DIR, "tgbot/db.sqlite3"))
 LOCALES_DIR: str = normpath(join(BASE_DIR, "tgbot/locales"))
-LOG_FILE: str = join(BASE_DIR, "log.log")
+LOG_FILE: str = join(BASE_DIR, "open-weather-bot.log")
 
 
 class TgBot(NamedTuple):
